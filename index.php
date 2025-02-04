@@ -7,6 +7,7 @@ $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
 var_dump($_SERVER["REQUEST_URI"]);
+echo $requestPath;
 switch($requestPath) {
     case "/analytics/user":
         getUsers($accessToken, $clientId, $_GET['id']);
