@@ -23,10 +23,12 @@ switch ($httpCode) {
         if(isset($data["data"])){
             $resp = [];
             foreach ($data["data"] as $stream) {
-                $resp[] = [
-                    "title" => $stream["title"],
-                    "user_name" => $stream["user_name"],
-                ];
+                if($stream["type"] == "live"){
+                    $resp[] = [
+                        "title" => $stream["title"],
+                        "user_name" => $stream["user_name"],
+                    ];
+                }
             }
             echo json_encode($resp);
         }
