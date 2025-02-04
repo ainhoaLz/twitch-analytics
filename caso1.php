@@ -2,7 +2,6 @@
 $accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $streamerId = "39518378";
-$streamerId = "a";
 $url = "https://api.twitch.tv/helix/users?id=$streamerId";
 
 $ch = curl_init();
