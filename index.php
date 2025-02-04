@@ -20,6 +20,7 @@ echo($requestPath);
 //}
 switch($requestPath) {
     case "/twitch-analytics/index.php/analytics/user":
+        echo($_GET['id']);
         getUsers($accessToken, $clientId, $_GET['id']);
         break;
     case "/twitch-analytics/index.php/analytics/streams":
