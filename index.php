@@ -7,6 +7,7 @@ $accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
+var_dump($_SERVER["REQUEST_URI"]);
 
 switch($requestPath) {
     case "/analytics/user":
