@@ -16,14 +16,28 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
 $response = curl_exec($ch);
 
-$data = json_decode($response, true);
-
-foreach ($data["data"] as $stream) {
-    $resp[] = [$stream["title"], $stream["user_name"]];
-
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+switch ($httpCode) {
+    case 200:
+        $data = json_decode($response, true);
+        if(isset($data["data"])){
+            $resp = [];
+            foreach ($data["data"] as $stream) {
+                $resp[] = [
+                    "title" => $stream["title"],
+                    "user_name" => $stream["user_name"],
+                ];
+            }
+            echo json_encode($resp);
+        }
+        break;
+    case 401:
+        echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+        break;
+    case 500:
+        echo json_encode(["error" => "Internal server error."]);
+        break;
 }
 
 curl_close($ch);
-echo json_encode($resp, JSON_PRETTY_PRINT);
-
 ?>
