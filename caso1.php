@@ -2,6 +2,7 @@
 $accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $streamerId = "39518378";
+$streamerId = "a";
 $url = "https://api.twitch.tv/helix/users?id=$streamerId";
 
 $ch = curl_init();
@@ -16,14 +17,29 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
 $response = curl_exec($ch);
-
 if (curl_errno($ch)) {
-    echo curl_error($ch);
+    echo json_encode(["error" => "Error en la solicitud curl: " . curl_error($ch)]);
     curl_close($ch);
     exit;
 }
 
-echo $response;
-
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+switch ($httpCode) {
+    case 200:
+        echo $response;
+        break;
+    case 400:
+        echo json_encode(["error" => "Invalid or missing 'id' parameter."]);
+        break;
+    case 401:
+        echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+        break;
+    case 404:
+        echo json_encode(["error" => "User not found."]);
+        break;
+    case 500:
+        echo json_encode(["error" => "Internal server error."]);
+        break;
+}
 curl_close($ch);
 ?>
