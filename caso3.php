@@ -69,18 +69,19 @@ function addUserInfo($stream, $accessToken, $clientId){
                 ];
             }
         }
+        //agregamos los usuarios a los streams
+        foreach ($returnStream as $index => $s) {
+            $userId = $s["user_id"];
+            if (isset($users[$userId])) {
+                $returnStream[$index]["user_display_name"] = $users[$userId]["user_display_name"];
+                $returnStream[$index]["profile_image_url"] = $users[$userId]["profile_image_url"];
+            }
+        }
+        curl_close($ch);
+        return [$httpCode, $returnStream];
     }
     curl_close($ch);
-    //agregamos los usuarios a los streams
-    foreach ($returnStream as $index => $s) {
-        $userId = $s["user_id"];
-        if (isset($users[$userId])) {
-            $returnStream[$index]["user_display_name"] = $users[$userId]["user_display_name"];
-            $returnStream[$index]["profile_image_url"] = $users[$userId]["profile_image_url"];
-        }
-    }
-    return $returnStream;
-
+    return [$httpCode, null];
 
 }
 
@@ -90,27 +91,27 @@ function my_sort($a, $b) {
 
 function getEnrichedStreams($accessToken, $clientId, $limit){
     $streams = get_streams($accessToken, $clientId);
-    switch($streams[1]){
-        case 200: //se ha devuelto una respuesta 200
-            usort($streams[0], "my_sort");
-            $limitedStreams = array_slice($streams[0], 0, $limit);
-            $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
-            echo json_encode($resp);
-            break;
-        case 400:
+    if($streams[1] == 200){ //si se ha devuelto una respuesta 200 podemos seguir
+        usort($streams[0], "my_sort");
+        if(!ctype_digit($limit) || $limit <= 0 || $limit > count($streams[0])){
             http_response_code(400);
             echo json_encode(["error" => "Invalid 'limit' parameter."]);
-            break;
-        case 401:
-            http_response_code(401);
-            echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-            break;
-        case 500:
-            http_response_code(500);
-            echo json_encode(["error" => "Internal server error."]);
-            break;
+            return;
+        }
+        $limitedStreams = array_slice($streams[0], 0, $limit);
+        $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
+        switch($resp[0]){
+            case 200:
+                echo json_encode($resp);
+                break;
+            case 401:
+                echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+                break;
+            case 500:
+                echo json_encode(["error" => "Internal server error."]);
+                break;
+        }
     }
-
 }
 
 ?>
