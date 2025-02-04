@@ -19,13 +19,13 @@ echo($requestPath);
 //        break;
 //}
 switch($requestPath) {
-    case "twitch-analytics/index.php/analytics/user":
+    case "/twitch-analytics/index.php/analytics/user":
         getUsers($accessToken, $clientId, $_GET['id']);
         break;
-    case "twitch-analytics/index.php/analytics/streams":
+    case "/twitch-analytics/index.php/analytics/streams":
         getStreams($accessToken, $clientId);
         break;
-    case "twitch-analytics/index.php/analytics/streams/enriched":
+    case "/twitch-analytics/index.php/analytics/streams/enriched":
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
 }
