@@ -72,7 +72,8 @@ function addUserInfo($stream, $accessToken, $clientId){
         //agregamos los usuarios a los streams
         foreach ($returnStream as $index => $s) {
             $userId = $s["user_id"];
-            if (isset($users[$userId])) {
+            if (isset($users[$userId])) { //verifico si existe un usuario con ese userId en users
+                //si existe añado dos claves al returnStream
                 $returnStream[$index]["user_display_name"] = $users[$userId]["user_display_name"];
                 $returnStream[$index]["profile_image_url"] = $users[$userId]["profile_image_url"];
             }
