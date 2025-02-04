@@ -1,10 +1,8 @@
 
 <?php
-$accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
-$clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-$limit = 3;
 
-function getStreams($accessToken, $clientId){
+
+function get_streams($accessToken, $clientId){
     $url = "https://api.twitch.tv/helix/streams";
     $ch = curl_init($url);
     $headers = ["Authorization: Bearer $accessToken", "Client-Id: $clientId", "Content-type: application/json"];
@@ -32,12 +30,13 @@ function getStreams($accessToken, $clientId){
                     "title" => $stream["title"],
                 ];
             }
-            return $resp;
+            curl_close($ch);
+            return [$resp , $httpCode];
         }
 
     }
     curl_close($ch);
-    return null;
+    return [null, $httpCode];
 
 }
 
@@ -85,18 +84,33 @@ function addUserInfo($stream, $accessToken, $clientId){
 
 }
 
-function my_sort($a, $b){
-    if($a["viewer_count"] == $b["viewer_count"]){
-        return 0;
-    }
-    return ($a["viewer_count"] > $b["viewer_count"]) ? -1 : 1;
-    //si a es mayor que b devuelve -1 para que a aparezca antes en el array
-    //si a es menor que b devuelve 1 para que b aparezca antes en e array
+function my_sort($a, $b) {
+    return $b["viewer_count"] - $a["viewer_count"];
 }
 
-$streams = getStreams($accessToken, $clientId);
-usort($streams, "my_sort");
-$limitedStreams = array_slice($streams, 0, $limit);
-$resp = addUserInfo($limitedStreams, $accessToken, $clientId);
-echo json_encode($resp);
+function getEnrichedStreams($accessToken, $clientId, $limit){
+    $streams = get_streams($accessToken, $clientId);
+    switch($streams[1]){
+        case 200: //se ha devuelto una respuesta 200
+            usort($streams[0], "my_sort");
+            $limitedStreams = array_slice($streams[0], 0, $limit);
+            $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
+            echo json_encode($resp);
+            break;
+        case 400:
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid 'limit' parameter."]);
+            break;
+        case 401:
+            http_response_code(401);
+            echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+            break;
+        case 500:
+            http_response_code(500);
+            echo json_encode(["error" => "Internal server error."]);
+            break;
+    }
+
+}
+
 ?>
