@@ -2,8 +2,6 @@
 include 'caso1.php';
 include 'caso2.php';
 include 'caso3.php';
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 $accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
