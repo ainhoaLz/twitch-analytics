@@ -101,17 +101,20 @@ function getEnrichedStreams($accessToken, $clientId, $limit){
         }
         $limitedStreams = array_slice($streams[0], 0, $limit);
         $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
-        switch($resp[0]){
-            case 200:
-                echo json_encode($resp[1]);
-                break;
-            case 401:
-                echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-                break;
-            case 500:
-                echo json_encode(["error" => "Internal server error."]);
-                break;
-        }
+    }
+    else{ //ha habido un error al obtener la lista de streams
+        $resp = $streams;
+    }
+    switch($resp[0]){
+        case 200:
+            echo json_encode($resp[1]);
+            break;
+        case 401:
+            echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+            break;
+        case 500:
+            echo json_encode(["error" => "Internal server error."]);
+            break;
     }
 }
 
