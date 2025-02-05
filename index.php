@@ -30,7 +30,7 @@ $accessToken = getToken($clientId, $clientSecret);
 
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
-var_dump($requestPath);
+
 switch($requestPath) {
     case "/analytics/user":
         getUsers($accessToken, $clientId, $_GET['id']);
