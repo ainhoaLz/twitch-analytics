@@ -96,15 +96,11 @@ function getEnrichedStreams($accessToken, $clientId, $limit){
         usort($streams[0], "my_sort");
         if(!ctype_digit($limit) || $limit <= 0 || $limit > count($streams[0])){
             $resp = [400, null];
-//            http_response_code(400);
-//            echo json_encode(["error" => "Invalid 'limit' parameter."]);
-//            return;
         }
         else{
             $limitedStreams = array_slice($streams[0], 0, $limit);
             $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
         }
-
     }
     else{ //ha habido un error al obtener la lista de streams
         $resp = $streams;
