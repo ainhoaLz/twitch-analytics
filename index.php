@@ -29,25 +29,14 @@ $clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
 $accessToken = getToken($clientId, $clientSecret);
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
-//switch($requestPath) {
-//    case "/analytics/user":
-//        getUsers($accessToken, $clientId, $_GET['id']);
-//        break;
-//    case "/analytics/streams":
-//        getStreams($accessToken, $clientId);
-//        break;
-//    case "/analytics/streams/enriched":
-//        getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
-//        break;
-//}
 switch($requestPath) {
-    case "/twitch-analytics/index.php/analytics/user":
+    case "/analytics/user":
         getUsers($accessToken, $clientId, $_GET['id']);
         break;
-    case "/twitch-analytics/index.php/analytics/streams":
+    case "/analytics/streams":
         getStreams($accessToken, $clientId);
         break;
-    case "/twitch-analytics/index.php/analytics/streams/enriched":
+    case "/analytics/streams/enriched":
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
 }
