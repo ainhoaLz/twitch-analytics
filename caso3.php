@@ -103,7 +103,7 @@ function getEnrichedStreams($accessToken, $clientId, $limit){
         $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
         switch($resp[0]){
             case 200:
-                echo json_encode($resp);
+                echo json_encode($resp[1]);
                 break;
             case 401:
                 echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
