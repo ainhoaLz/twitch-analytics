@@ -95,12 +95,16 @@ function getEnrichedStreams($accessToken, $clientId, $limit){
     if($streams[1] == 200){ //si se ha devuelto una respuesta 200 podemos seguir
         usort($streams[0], "my_sort");
         if(!ctype_digit($limit) || $limit <= 0 || $limit > count($streams[0])){
-            http_response_code(400);
-            echo json_encode(["error" => "Invalid 'limit' parameter."]);
-            return;
+            $resp = [400, null];
+//            http_response_code(400);
+//            echo json_encode(["error" => "Invalid 'limit' parameter."]);
+//            return;
         }
-        $limitedStreams = array_slice($streams[0], 0, $limit);
-        $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
+        else{
+            $limitedStreams = array_slice($streams[0], 0, $limit);
+            $resp = addUserInfo($limitedStreams, $accessToken, $clientId);
+        }
+
     }
     else{ //ha habido un error al obtener la lista de streams
         $resp = $streams;
@@ -108,6 +112,10 @@ function getEnrichedStreams($accessToken, $clientId, $limit){
     switch($resp[0]){
         case 200:
             echo json_encode($resp[1]);
+            break;
+        case 400:
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid 'limit' parameter."]);
             break;
         case 401:
             echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
