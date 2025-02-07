@@ -6,8 +6,11 @@ Este proyecto se encarga de obtener y mostrar datos de análisis de Twitch (usua
 ## Grupo Mikados
 
 Mikel Pio
+
 Asier Larrayoz
+
 Julen Pareja
+
 Ainhoa Lara
 
 ## Requisitos
