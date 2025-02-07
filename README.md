@@ -61,12 +61,12 @@ Una vez hemos lanzado el servidor en local, podemos realizar estas pruebas para 
 Además de estas pruebas, también puedes probar a dejar vacios o escribir una letra en los parámetros id y limit para ver que se muestran los errores correctamente.
 
 ### 2. Ejecución en servidor público
-+ Caso 1: http://15.237.208.13/analytics/user?id=39518378
-+ Caso 2: http://15.237.208.13/analytics/streams
-+ Caso 3: http://15.237.208.13/analytics/streams/enriched?limit=3
++ Caso 1: http://35.180.210.32/analytics/user?id=39518378
++ Caso 2: http://35.180.210.32/analytics/streams
++ Caso 3: http://35.180.210.32/analytics/streams/enriched?limit=3
 
 Pruebas adicionales:
 
-+ http://15.237.208.13/analytics/user?id=a
-+ http://15.237.208.13/analytics/streams/enriched?limit=a
-+ http://15.237.208.13/analytics/streams/enriched?limit=-1
++ http://35.180.210.32/analytics/user?id=a
++ http://35.180.210.32/analytics/streams/enriched?limit=a
++ http://35.180.210.32/analytics/streams/enriched?limit=-1
