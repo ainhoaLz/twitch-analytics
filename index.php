@@ -23,7 +23,7 @@ function getToken($clientId, $clientSecret) {
     return $result["access_token"];
 }
 
-//$accessToken = "c9v255gz2xi5xij9293ei6vaob999x";
+header("Content-Type: application/json");
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
 $accessToken = getToken($clientId, $clientSecret);
