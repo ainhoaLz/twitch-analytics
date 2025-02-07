@@ -31,18 +31,23 @@ Ainhoa Lara
 Accede a Amazon Lightsail y después accede a la instancia. 
 
 Iniciar una nueva conexion desde la pagina web. Inmediatamente despues aparecera la terminal del servidor, donde podemos ver los archivos de configuración del servidor y obtener la información actualizada realizando un git pull.
+
 Además de conectarse por la terminal, puedes usar tu propio cliente SSH. Por ejemplo, puedes descargar filezilla y obtener la clave ssh de la instancia para que sea más cómodo trabajar.
 
 ### 2. Trabajar en local
+
 Para implementar una nueva funcionalidad programala en tu ordenador con tu programa de preferencia, nosotros hemos utilizado phpStorm. Una vez finalizado el código, para ver como funciona, lanza el programa en local de la siguiente forma:
+
 + Desde la terminal de windows: Accede al directorio donde estan los archivos y ejecuta el siguiente comando: php -S localhost:12000 (12000 es el puerto donde quieres que se lance el servidor)
 + Desde la terminal de phpStorm: Directamente ejecutamos el comando php -S localhost:12000
 
 ### 3. Desplegar una funcionalidad
+
 1. Cuando la funcionalidad este lista subala al repositorio.
 2. Conectate a la terminal del servidor público desde amazon lighsail y realiza un pull del repositorio para que se apliquen los cambios.
 
 ### 4. (Opcional) Trabajar en desarrollador
+
 Puedes realizar una nueva funcionalidad, desplegarla, y probar como funciona en el servidor público. Esto no es muy conveniente, ya que, si algo falla, el fallo va a estar en el servidor público mientrás realizas las pruebas, por lo que, todos los usuarios tendrán problemas.
 
 ## Ejecución
