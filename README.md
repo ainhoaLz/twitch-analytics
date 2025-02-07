@@ -1,18 +1,31 @@
-Para implementar este proyecto se ha hecho uso de los servidores AWS de Amazon en este caso lightsail. 
-Se ha clonado en el servidor el repositorio de github.
 
-Para ejecutar cada caso escriba el siguiente url en el navegador:
+# Proyecto Twitch Analytics
 
-- Caso 1: http://15.237.208.13/analytics/user?id=39518378
-- Caso 2: http://15.237.208.13/analytics/streams
-- Caso 3: http://15.237.208.13/analytics/streams/enriched?limit=3
+Este proyecto se encarga de obtener y mostrar datos de análisis de Twitch (usuarios, streams y streams enriquecidos) mediante la integración con la API de Twitch. Se ha implementado utilizando PHP y se despliega en un servidor Apache alojado en AWS Lightsail.
 
-Para acceder a los ficheros del proyecto y poder añadir o eliminar se tiene que acceder a la instancia de Amazon Ligthsail, en este caso, usando la cuenta de Ainhoa. 
-Una vez dentro para modificar cualquier cosa se debe conectar a la instancia y desde la terminal se podra acceder a todos los elementos. Los elementos se encuantran en la carpeta "twitch-analytics".
+## Requisitos
 
-El servidor esta conectado con el repositorio, si se desea hacer algun cambio suba los elementos al repositorio y despues haga un pull.
+- **Servidor:** AWS Lightsail (o EC2) con Linux (por ejemplo, Amazon Linux)
+- **Software:**
+  - Apache
+  - PHP (con cURL habilitado)
+  - Git
+- **Credenciales:**
+  - Acceso a la cuenta de GitHub (para clonar el repositorio vía SSH o HTTPS)
+  - Claves y tokens de la API de Twitch (clientId y clientSecret)
 
+## Instalación y Despliegue
 
+### 1. Conectarse a la instancia
 
+Accede a la instancia mediante SSH (usando la cuenta correspondiente):
 
+Iniciar una nueva conexion desde la pagina web. Inmediatamente despues aparecera la terminal
+
+### 2. Trabajar en local
+Para implementar una nueva funcionalidad programela en php y pruebela de manera local, cuando este lista desplegala.
+
+### 3. Desplegar una funcionalidad
+1. Cuando la funcionalidad este lista subala al repositorio.
+2. Desde la terminal haga un pull del repositorio para que se apliquen los cambios.
 
