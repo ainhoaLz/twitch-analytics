@@ -22,7 +22,9 @@ function getUsers($accessToken, $clientId, $streamerId){
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     switch ($httpCode) {
         case 200:
-            echo $response;
+            $data = json_decode($response, true);
+            $user = $data['data'][0];
+            echo json_encode($user);
             break;
         case 400:
             echo json_encode(["error" => "Invalid or missing 'id' parameter."]);
