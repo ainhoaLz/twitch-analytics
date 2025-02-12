@@ -2,6 +2,7 @@
 include 'caso1.php';
 include 'caso2.php';
 include 'caso3.php';
+include 'registration.php';
 function getToken($clientId, $clientSecret) {
     $url = "https://id.twitch.tv/oauth2/token";
     $headers = [
@@ -26,10 +27,10 @@ function getToken($clientId, $clientSecret) {
 header("Content-Type: application/json");
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
-$accessToken = getToken($clientId, $clientSecret);
+//$accessToken = getToken($clientId, $clientSecret);
 
 //Para pruebas en local utilizar este token (lanzar en terminal php -S localhost:12000)
-//$accessToken = "4lxdahtlwcyu0x51lhq7rfviyqgdg3";
+$accessToken = "4lxdahtlwcyu0x51lhq7rfviyqgdg3";
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
 
@@ -43,5 +44,10 @@ switch($requestPath) {
     case "/analytics/streams/enriched":
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
+    case "/register":
+        registerUser();
+        break;
 }
+
+
 ?>
