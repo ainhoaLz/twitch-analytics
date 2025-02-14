@@ -1,6 +1,5 @@
 <?php
 
-
 function registerUser(){
     $data = getBody();
     $email = $data["email"];
