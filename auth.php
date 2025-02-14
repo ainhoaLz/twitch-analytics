@@ -1,12 +1,16 @@
 <?php
+header("Content-Type: application/json");
 
-require 'vendor/autoload.php';
+// Conectar a la base de datos
+function getDbConnection() {
+    return new PDO("mysql:host=localhost;dbname=tu_base_de_datos", "usuario", "contraseña");
+}
 
-function getOrCreateApiKey($email)
-{
-    $db = new PDO("mysql:host=localhost;dbname=tu_base_de_datos", "usuario", "contraseña");
+// Generar o recuperar una API Key
+function getOrCreateApiKey($email) {
+    $db = getDbConnection();
 
-    //Ver si el usuario ya tiene un api_key
+    // Verificar si el usuario ya tiene una API Key
     $stmt = $db->prepare("SELECT api_key FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
@@ -14,7 +18,8 @@ function getOrCreateApiKey($email)
     if ($user) {
         return json_encode(["api_key" => $user['api_key']]);
     } else {
-        $apiKey = bin2hex(random_bytes(16));
+        // Generar una nueva API Key
+        $apiKey = bin2hex(random_bytes(16)); // 32 caracteres aleatorios
         $stmt = $db->prepare("INSERT INTO users (email, api_key) VALUES (?, ?)");
         $stmt->execute([$email, $apiKey]);
 
@@ -22,13 +27,22 @@ function getOrCreateApiKey($email)
     }
 }
 
-$data = json_decode(file_get_contents("php://input"), true);
+// Obtener la ruta solicitada
+$requestPath = strtok($_SERVER["REQUEST_URI"], '?');
 
-if (isset($data['email'])) {
-    header("Content-Type: application/json");
-    echo getOrCreateApiKey($data['email']);
-} else {
-    http_response_code(400);
-    echo json_encode(["error" => "Email requerido"]);
+// Permitir solicitud con GET en "/auth"
+if ($requestPath === "/auth" && $_SERVER["REQUEST_METHOD"] === "GET") {
+    if (!isset($_GET['email'])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Email requerido"]);
+        exit;
+    }
+
+    echo getOrCreateApiKey($_GET['email']);
+    exit;
 }
 
+// Si llega aquí, es porque el endpoint no existe
+http_response_code(404);
+echo json_encode(["error" => "Endpoint no encontrado"]);
+?>
