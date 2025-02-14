@@ -3,6 +3,8 @@ include 'caso1.php';
 include 'caso2.php';
 include 'caso3.php';
 include 'registration.php';
+include 'generateToken.php'; // Incluir el archivo de generación de token
+
 function getToken($clientId, $clientSecret) {
     $url = "https://id.twitch.tv/oauth2/token";
     $headers = [
@@ -25,6 +27,7 @@ function getToken($clientId, $clientSecret) {
 }
 
 header("Content-Type: application/json");
+
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
 //$accessToken = getToken($clientId, $clientSecret);
@@ -47,7 +50,9 @@ switch($requestPath) {
     case "/register":
         registerUser();
         break;
+    case "/token": // Agregamos el caso para manejar la generación de token
+        include 'generateToken.php';
+        break;
 }
-
 
 ?>
