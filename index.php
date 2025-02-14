@@ -3,6 +3,8 @@ include 'caso1.php';
 include 'caso2.php';
 include 'caso3.php';
 include 'registration.php';
+include 'generateToken.php';
+include 'database.php';
 
 
 function getToken($clientId, $clientSecret) {
@@ -48,8 +50,19 @@ switch($requestPath) {
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
     case "/register":
-        registerUser();
+        registerUser(getBody());
         break;
+    case "/token":
+        generateToken(getBody());
+        break;
+}
+
+function getBody(){
+    //Como estamos enviando el body como un JSON, tenemos que realizar esto para extraer los datos
+    //Si usaramos por ejemplo, "application/x-www-form-urlencoded"
+    //Podriamos obtener los datos con $_POST['email'], como haciamos con las peticiones get
+    $body = file_get_contents("php://input");
+    return json_decode($body, true);
 }
 
 ?>
