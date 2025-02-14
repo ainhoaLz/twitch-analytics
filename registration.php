@@ -1,5 +1,4 @@
 <?php
-
 function registerUser($data){
     if(!isset($data["email"])){ //email nulo
         http_response_code(400);
