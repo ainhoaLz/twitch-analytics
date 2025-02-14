@@ -1,32 +1,49 @@
 <?php
 function registerUser(){
     $data = getBody();
-    if(!isset($data["email"])){ //email nulo
+    $email = $data["email"];
+
+    if(!isset($email)){ //email nulo
         http_response_code(400);
         echo json_encode(["error" => "The email is mandatory"]);
     }
-    elseif(!filter_var($data["email"], FILTER_VALIDATE_EMAIL)){
+    elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)){ //email no sigue el formato
         http_response_code(400);
         echo json_encode(["error" => "The email must be a valid email address"]);
     }
-    elseif(isset($data["email"]) && filter_var($data["email"], FILTER_VALIDATE_EMAIL)){ //hay un email válido
+    elseif(isset($email) && filter_var($email, FILTER_VALIDATE_EMAIL)){ //hay un email válido
+
         //generar apiKey
         $apiKey = bin2hex(random_bytes(16));
+        // Conecta con la base de datos
         $con = connectToDB();
 
-        $queryId = "SELECT COALESCE(max(id),0) + 1 AS new_id FROM users";
-        $stmt = $con->query($queryId);
-        $id = $stmt->fetchColumn();
-        $date = date("Y-m-d H:i:s");
+        $queryPKemail = $con -> prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        $queryPKemail -> execute([$email]);
+        $ncorreo = $queryPKemail->fetchColumn();
+        if($ncorreo > 0){
+            // Si el email ya existe, devolvemos error 409
+            http_response_code(409);
+            echo json_encode(["error" => "The email is already registered"]);
+        }else{
 
-        //insertar en bbdd junto con email
-        $insertQuery = $con->prepare("INSERT INTO users (email, api_key, id, created_at) VALUES (?,?,?,?)");
+            // Genera un id sumando 1 al anterior creado. Si no hay, es el 1.
+            $queryId = "SELECT COALESCE(max(id),0) + 1 AS new_id FROM users";
+            // Hacemos la consulta
+            $stmt = $con->query($queryId);
+            //$stmt obtiene el primer valor de la primera consulta devuelta
+            $id = $stmt->fetchColumn();
+            $date = date("Y-m-d H:i:s");
 
-        if(!$insertQuery->execute([$data["email"], $apiKey, $id, $date])){
-            throw new Exception("Error inserting user to database: ", $insertQuery->errorInfo());
+            //insertar en bbdd junto con email
+            $insertQuery = $con->prepare("INSERT INTO users (email, api_key, id, created_at) VALUES (?,?,?,?)");
+
+            if (!$insertQuery->execute([$data["email"], $apiKey, $id, $date])) {
+                throw new Exception("Error inserting user to database: ", $insertQuery->errorInfo());
+            }
+            http_response_code(200);
+            echo json_encode(["api_key" => $apiKey]);
         }
-        http_response_code(200);
-        echo json_encode(["api_key" => $apiKey]);
     }
     else{
         http_response_code(500);
