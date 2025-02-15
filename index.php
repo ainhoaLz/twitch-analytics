@@ -19,6 +19,7 @@ function getToken($clientId, $clientSecret) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($headers));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
     $response = curl_exec($ch);
     curl_close($ch);
@@ -32,13 +33,16 @@ header("Content-Type: application/json");
 
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
-//$accessToken = getToken($clientId, $clientSecret);
+$accessToken = getToken($clientId, $clientSecret);
 
-//Para pruebas en local utilizar este token (lanzar en terminal php -S localhost:12000)
-$accessToken = "4lxdahtlwcyu0x51lhq7rfviyqgdg3";
+//validación del token de usuario
+if($_SERVER["REQUEST_METHOD"]=='GET' && !validateToken()){
+    http_response_code(401);
+    echo json_encode(["error" => "Unauthorized. Token is invalid or expired."]);
+    exit;
+}
 
 $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
-
 switch($requestPath) {
     case "/analytics/user":
         getUsers($accessToken, $clientId, $_GET['id']);
@@ -63,6 +67,26 @@ function getBody(){
     //Podriamos obtener los datos con $_POST['email'], como haciamos con las peticiones get
     $body = file_get_contents("php://input");
     return json_decode($body, true);
+}
+
+function validateToken(){
+    $headers = getAllHeaders();
+    if(!isset($headers["Authorization"])){
+        return false; //no se ha introducido un token
+    }
+    $authHeader = $headers['Authorization'];
+    $token = str_replace('Bearer ', '', $authHeader);
+    $con = connectToDB();
+    $query = $con->prepare("SELECT id FROM tokens WHERE token = ? AND expires_at > NOW()");
+    $query->execute([$token]);
+    $result = $query->fetchColumn();
+
+    if(empty($result)){
+        return false; //la consulta no nos ha devuelto ningun id, por lo que el token no existe
+    }
+
+    return true;
+
 }
 
 ?>
