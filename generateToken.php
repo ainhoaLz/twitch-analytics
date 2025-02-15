@@ -21,7 +21,7 @@ function generateToken($data){
         $queryUser = $con->prepare("SELECT id FROM users WHERE email = ? and api_key = ?");
         $queryUser->execute([$data["email"], $data["api_key"]]);
         $user_id = $queryUser->fetchColumn();
-        if(is_null($user_id)){
+        if(empty($user_id)){
             http_response_code(401);
             echo json_encode(["error" => "Unauthorized. API access token is invalid."]);
             return;
