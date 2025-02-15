@@ -29,12 +29,21 @@ function generateToken($data){
         //generamos token
         $token = bin2hex(random_bytes(32));
 
-        //creamos el id
+        //creamos el id del token
         $queryId = "SELECT COALESCE(max(id),0) + 1 AS new_id FROM tokens";
         $stmt = $con->query($queryId);
         $id = $stmt->fetchColumn();
 
         //insertar en bbdd
+        //primero comprobamos si ese usuario ya tiene un token
+        $checkQuery = $con->prepare("SELECT id FROM tokens WHERE user_id = ?");
+        $checkQuery->execute([$user_id]);
+        $userHasToken = $checkQuery->fetchColumn();
+        if(!empty($userHasToken)){ //si el usuario ya tiene un token lo borramos para que se cree uno nuevo y no haya duplicados
+            $deleteQuery = $con->prepare("DELETE FROM tokens WHERE id = ?");
+            $deleteQuery->execute([$userHasToken]);
+        }
+
         $insertQuery = $con->prepare("INSERT INTO tokens (id, user_id, token, created_at, expires_at) VALUES (?,?,?,NOW(),NOW() + INTERVAL '3 days')");
 
         if(!$insertQuery->execute([$id, $user_id, $token])){
