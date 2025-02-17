@@ -5,6 +5,7 @@ include 'caso3.php';
 include 'registration.php';
 include 'generateToken.php';
 include 'database.php';
+include 'getTops.php';
 
 
 function getToken($clientId, $clientSecret) {
@@ -53,6 +54,9 @@ switch($requestPath) {
     case "/analytics/streams/enriched":
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
+    case "/analytics/topsofthetops":
+        getTopsofthetops($accessToken, $clientId, $_GET['since'] ?? null);
+        break;
     case "/register":
         registerUser(getBody());
         break;
@@ -69,7 +73,8 @@ function getBody(){
     return json_decode($body, true);
 }
 
-function validateToken(){
+function validateToken(): bool
+{
     $headers = getAllHeaders();
     if(!isset($headers["Authorization"])){
         return false; //no se ha introducido un token
