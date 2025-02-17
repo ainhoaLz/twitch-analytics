@@ -13,6 +13,15 @@ function registerUser($data){
         $apiKey = bin2hex(random_bytes(16));
         $con = connectToDB();
 
+        //si el email ya tiene un api_key generamos uno nuevo
+        $queryEmail = $con->prepare("SELECT id FROM users WHERE email = ?");
+        $queryEmail->execute(array($data["email"]));
+        $emailExists = $queryEmail->fetchColumn();
+        if(!empty($emailExists)){ //el usuario ya tiene una api_key asi que borramos esta para que se cree la nueva
+            $deleteQuery = $con->prepare("DELETE FROM users WHERE id = ?");
+            $deleteQuery->execute([$emailExists]);
+        }
+
         $queryId = "SELECT COALESCE(max(id),0) + 1 AS new_id FROM users";
         $stmt = $con->query($queryId);
         $id = $stmt->fetchColumn();
