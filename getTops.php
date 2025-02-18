@@ -3,6 +3,29 @@
 
 
 function getTopsofthetops($accessToken, $clientId, $since){
+    $con = connectToDB();
+    $checkQuery = $con->query("SELECT updated_at from top_games");
+    $row = $checkQuery->fetch();
+    if($row != null){
+        $updated_at = new DateTime($row['updated_at']);
+        $now = new DateTime();
+        $lastUpdated = $now->getTimestamp() - $updated_at->getTimestamp();
+        if($lastUpdated > $since){
+            callTwitchAPI($accessToken, $clientId);
+        }
+        else{
+            //devolver datos desde BBDD
+            $query = $con->query("SELECT game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at from top_games");
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode($result);
+        }
+    }
+    else{
+        callTwitchAPI($accessToken, $clientId);
+    }
+}
+
+function callTwitchAPI($accessToken, $clientId){
     //primero hay que obtener los top 3 juegos más visualizados
     $topGames = getTop3Games($accessToken, $clientId);
     if($topGames[1] == 200){ //si se ha devuelto una respuesta 200 podemos seguir
@@ -49,10 +72,10 @@ function getTopsofthetops($accessToken, $clientId, $since){
                 ];
             }
         }
+        actualizarBDD($result);
         echo json_encode($result);
+        //
     }
-
-
 }
 
 function getTop40Videos($accessToken, $clientId, $gameId){

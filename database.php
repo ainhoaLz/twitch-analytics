@@ -17,7 +17,7 @@ function connectToDB(){
 }
 
 
-// AUN NO FUNCIONA SOLO BORRA LA TABLA
+
 function actualizarBDD($videos)
 {
     $con = connectToDB();
