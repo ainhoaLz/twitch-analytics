@@ -77,7 +77,7 @@ switch($requestPath) {
         getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
         break;
     case "/analytics/topsofthetops":
-        getTopsofthetops($accessToken, $clientId, $_GET['since'] ?? 600);
+        getTopsofthetops($accessToken, $clientId, $_GET['since'] ?? '600');
         break;
     case "/register":
         registerUser(getBody());

@@ -6,23 +6,27 @@ function getTopsofthetops($accessToken, $clientId, $since){
     $con = connectToDB();
     $checkQuery = $con->query("SELECT updated_at from top_games");
     $row = $checkQuery->fetch();
-    if($row != null){ //hay datos en la BBDD
-        $updated_at = new DateTime($row['updated_at']);
-        $now = new DateTime();
-        $lastUpdated = $now->getTimestamp() - $updated_at->getTimestamp();
-        if($lastUpdated > $since){
+    if(!ctype_digit($since) || 0 > $since){
+        $res = [null, 400];
+    }
+    else{
+        if($row != null){ //hay datos en la BBDD
+            $updated_at = new DateTime($row['updated_at']);
+            $now = new DateTime();
+            $lastUpdated = $now->getTimestamp() - $updated_at->getTimestamp();
+            if($lastUpdated > $since){ //php convierte el $since a un int al compararlo con un entero
+                $res = callTwitchAPI($accessToken, $clientId);
+            }
+            else{
+                //devolver datos desde BBDD
+                $query = $con->query("SELECT game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at from top_games");
+                $result = $query->fetchAll(PDO::FETCH_ASSOC);
+                $res = [$result, 200];
+            }
+        }
+        else{ //si no hay datos en la BBDD llamamos a la api de twitch
             $res = callTwitchAPI($accessToken, $clientId);
         }
-        else{
-            //devolver datos desde BBDD
-            $query = $con->query("SELECT game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at from top_games");
-            $result = $query->fetchAll(PDO::FETCH_ASSOC);
-            $res[0] = $result;
-            $res[1] = 200;
-        }
-    }
-    else{ //si no hay datos en la BBDD llamamos a la api de twitch
-        $res = callTwitchAPI($accessToken, $clientId);
     }
     switch($res[1]){
         case 200:
