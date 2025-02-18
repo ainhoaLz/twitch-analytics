@@ -19,7 +19,7 @@ function getTopsofthetops($accessToken, $clientId, $since){
             }
             else{
                 //devolver datos desde BBDD
-                $query = $con->query("SELECT game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at from top_games");
+                $query = $con->query("SELECT game_id, game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at from top_games");
                 $result = $query->fetchAll(PDO::FETCH_ASSOC);
                 $res = [$result, 200];
             }
