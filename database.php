@@ -30,8 +30,12 @@ function actualizarBDD($videos)
 
         // Query SQL para insertar datos en la tabla `top_games`
         $sql = "INSERT INTO public.top_games 
-                (game_id, game_name, user_name, total_videos, total_views, most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at, updated_at) 
-                VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, :most_viewed_title, :most_viewed_views, :most_viewed_duration, :most_viewed_created_at, NOW())";
+                (game_id, game_name, user_name, total_videos, total_views, 
+                 most_viewed_title, most_viewed_views, most_viewed_duration, 
+                 most_viewed_created_at, updated_at) 
+                VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views, 
+                        :most_viewed_title, :most_viewed_views, :most_viewed_duration, 
+                        :most_viewed_created_at, NOW())";
 
         $stmt = $con->prepare($sql);
 
