@@ -1,7 +1,7 @@
 <?php
-include 'caso1.php';
-include 'caso2.php';
-include 'caso3.php';
+include 'getUser.php';
+include 'getStreams.php';
+include 'getEnrichedStreams.php';
 include 'registration.php';
 include 'generateToken.php';
 include 'database.php';
@@ -33,7 +33,7 @@ function getToken($clientId, $clientSecret) {
 header("Content-Type: application/json");
 
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-$clientSecret = "q3vb6b3xi9inlhwvuy6gcysvy3lgx1";
+$clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
 $accessToken = getToken($clientId, $clientSecret);
 
 //validación del token de usuario
