@@ -7,8 +7,23 @@ include 'generateToken.php';
 include 'database.php';
 include 'getTops.php';
 
+function getToken($clientId, $clientSecret){
+    $con = connectToDB();
+    //miramos a ver si ya hay un token en la bbdd
+    $query = $con->prepare("SELECT token, expires_at FROM twitch_tokens");
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_ASSOC);
 
-function getToken($clientId, $clientSecret) {
+    if($result){
+        $now = new DateTime();
+        $expiresAt = new DateTime($result['expires_at']);
+        //miramos si el token ha expirado
+        if($now < $expiresAt){
+            return $result['token'];
+        }
+    }
+
+    //si el token no existe o ha expirado solicitamos uno nuevo a la api de twitch
     $url = "https://id.twitch.tv/oauth2/token";
     $headers = [
         "client_id" => $clientId,
@@ -26,6 +41,13 @@ function getToken($clientId, $clientSecret) {
     curl_close($ch);
 
     $result = json_decode($response, true);
+
+    //expires_in es en segundos
+    $expires_at = date("Y-m-d H:i:s", time() + $result['expires_in']);
+
+    //guardamos el nuevo token en la BBDD
+    $insertQuery = $con -> prepare("INSERT INTO twitch_tokens (token, expires_at) VALUES (?, ?)");
+    $insertQuery -> execute([$result['access_token'], $expires_at]);
 
     return $result["access_token"];
 }
