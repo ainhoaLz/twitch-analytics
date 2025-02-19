@@ -102,6 +102,7 @@ Además de estas pruebas, también puedes probar a dejar vacios o escribir una l
 
 ### 2. Ejecución en servidor público
 
+Nosotros hemos hecho uso de Postman para realizar las peticiones.
 Debemos realizar los pasos igual que en local, es decir, registrarnos y obtener un token, para poder realizar peticiones a nuestra API, como por ejemplo:
 + Caso 1: http://35.180.210.32/analytics/user?id=39518378
 + Caso 2: http://35.180.210.32/analytics/streams
