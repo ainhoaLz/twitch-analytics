@@ -1,23 +1,21 @@
 <?php
 function registerUser($data){
 
-    $email = $data["email"];
-
-    if(!isset($email)){ //email nulo
+    if(!isset($data["email"])){ //email nulo
         http_response_code(400);
         echo json_encode(["error" => "The email is mandatory"]);
     }
-    elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+    elseif(!filter_var($data["email"], FILTER_VALIDATE_EMAIL)){
         http_response_code(400);
         echo json_encode(["error" => "The email must be a valid email address"]);
     }
-    elseif(isset($email) && filter_var($email, FILTER_VALIDATE_EMAIL)){ //hay un email válido
+    elseif(isset($data["email"]) && filter_var($data["email"], FILTER_VALIDATE_EMAIL)){ //hay un email válido
         //generar apiKey
         $apiKey = bin2hex(random_bytes(16));
         $con = connectToDB();
 
         $queryPKemail = $con -> prepare("SELECT * FROM users WHERE email = ?");
-        $queryPKemail -> execute([$email]);
+        $queryPKemail -> execute([$data["email"]]);
         $infouser = $queryPKemail->fetch();
 
 
@@ -25,7 +23,7 @@ function registerUser($data){
         if($infouser != null){
             // Si el email ya existe, devolvemos una nueva API key
             $updateQuery = $con->prepare("UPDATE users SET api_key = ? WHERE email = ?");
-            if (!$updateQuery->execute([$apiKey, $email])) {
+            if (!$updateQuery->execute([$apiKey, $data["email"]])) {
                 throw new Exception("Error updating API key in database: ", $updateQuery->errorInfo());
             }
 
@@ -42,7 +40,7 @@ function registerUser($data){
             //insertar en bbdd junto con email
             $insertQuery = $con->prepare("INSERT INTO users (email, api_key, id, created_at) VALUES (?,?,?,?)");
 
-            if (!$insertQuery->execute([$email, $apiKey, $id, $date])) {
+            if (!$insertQuery->execute([$data["email"], $apiKey, $id, $date])) {
                 throw new Exception("Error inserting user to database: ", $insertQuery->errorInfo());
             }
             http_response_code(200);
