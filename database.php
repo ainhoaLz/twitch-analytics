@@ -54,8 +54,6 @@ function actualizarBDD($videos)
             ]);
         }
 
-        // Cerrar la conexión
-        $con = null;
 
     } catch (PDOException $e) {
         echo "Error al insertar datos: " . $e->getMessage();
