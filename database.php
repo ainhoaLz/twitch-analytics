@@ -1,6 +1,5 @@
 <?php
 function connectToDB(){
-    //Funcion que nos conecta a la bbdd
     $host = "c724r43q8jp5nk.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com";
     $database = "d4nk1746t10jil";
     $user = "uk0klbg1uescn";
@@ -22,13 +21,9 @@ function actualizarBDD($videos)
 {
     $con = connectToDB();
 
-    // Consulta para borrar todos los registros de la tabla `top_games`
     $deleteSql = "TRUNCATE TABLE public.top_games";  // Utiliza DELETE si quieres un control más fino de los registros eliminados
     try {
-        // Ejecutar la consulta para borrar la tabla
-        $con->exec($deleteSql);  // Si usas DELETE en vez de TRUNCATE, usa $con->prepare() y $stmt->execute()
-
-        // Query SQL para insertar datos en la tabla `top_games`
+        $con->exec($deleteSql);  
         $sql = "INSERT INTO public.top_games 
                 (game_id, game_name, user_name, total_videos, total_views, 
                  most_viewed_title, most_viewed_views, most_viewed_duration, 
@@ -39,7 +34,6 @@ function actualizarBDD($videos)
 
         $stmt = $con->prepare($sql);
 
-        // Insertar cada video en la base de datos
         foreach ($videos as $video) {
             $stmt->execute([
                 ':game_id' => $video['game_id'],
@@ -54,6 +48,7 @@ function actualizarBDD($videos)
             ]);
         }
 
+        $con = null;
 
     } catch (PDOException $e) {
         echo "Error al insertar datos: " . $e->getMessage();
