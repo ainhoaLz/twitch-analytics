@@ -1,0 +1,13 @@
+{
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.11",
+        "phpmd/phpmd": "^2.15",
+        "friendsofphp/php-cs-fixer": "^3.70",
+        "phpro/grumphp": "^2.11"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
+    }
+}
