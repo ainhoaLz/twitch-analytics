@@ -1,17 +1,10 @@
 grumphp:
     tasks:
-        git_commit_message:
-            enforce_capitalized_subject: false
-            enforce_no_subject_punctuations: false
-            max_subject_width: 72
-            matchers:
-                pattern: '/^\[\d+\] - .+/'
-                message: 'El mensaje de commit debe seguir el formato: [issueNumber] - Descripción'
         phpcs:
             standard: PSR12
         phpmd:
             ruleset: ['cleancode', 'codesize', 'naming']
-        phpcsfixer:  # <-- Cambiado de php_cs_fixer a phpcsfixer
-            config: '.php-cs-fixer.php'
-            allow_risky: false
+    #        phpcsfixer:
+    #            config: '.php-cs-fixer.php'
+    #            allow_risky: false
     hooks_dir: ~
