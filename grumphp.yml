@@ -7,4 +7,10 @@ grumphp:
     #        phpcsfixer:
     #            config: '.php-cs-fixer.php'
     #            allow_risky: false
-    hooks_dir: ~
+        git_commit_message:
+            allow_empty_message: false
+            enforce_capitalized_subject: false
+            case_insensitive: false
+            max_subject_width: 100
+            matchers:
+                Must follow format [#1234] - Description or [#1234][#2345] - Description: '/^(\[#[0-9]*\])?\[#[0-9]*\] - [A-Z][a-zA-Z\s]*/'
