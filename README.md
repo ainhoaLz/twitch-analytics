@@ -92,11 +92,11 @@ Le debemos introducir nuestro correo y api key en el body:
 Ahora ya tenemos el token el cual podemos utilizar para realizar pruebas. Cada vez que realicemos una petición GET a nuestra api, tendremos que pasarle el token como header de autorización, es decir:
 Authorization Bearer token
 Asi, podremos realizar distintas pruebas:
-+ http://localhost:12000/analytics/user?id=39518378
-+ http://localhost:12000/analytics/streams/
-+ http://localhost:12000/analytics/streams/enriched?limit=3
-+ http://localhost:12000/analytics/topsofthetops
-+ http://localhost:12000/analytics/topsofthetops?since=40
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/user?id=39518378
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/enriched?limit=3
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops?since=40
 
 Además de estas pruebas, también puedes probar a dejar vacios o escribir una letra en los parámetros id, limit y since para ver que se muestran los errores correctamente.
 
@@ -104,16 +104,16 @@ Además de estas pruebas, también puedes probar a dejar vacios o escribir una l
 
 Nosotros hemos hecho uso de Postman para realizar las peticiones.
 Debemos realizar los pasos igual que en local, es decir, registrarnos y obtener un token, para poder realizar peticiones a nuestra API, como por ejemplo:
-+ Caso 1: http://35.180.210.32/analytics/user?id=39518378
-+ Caso 2: http://35.180.210.32/analytics/streams
-+ Caso 3: http://35.180.210.32/analytics/streams/enriched?limit=3
-+ http://35.180.210.32/analytics/topsofthetops
-+ http://35.180.210.32/analytics/topsofthetops?since=40
++ Caso 1: https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/user?id=39518378
++ Caso 2: https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams
++ Caso 3: https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/enriched?limit=3
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops?since=40
 
 Pruebas adicionales:
 
-+ http://35.180.210.32/analytics/user?id=a
-+ http://35.180.210.32/analytics/streams/enriched?limit=a
-+ http://35.180.210.32/analytics/streams/enriched?limit=-1
-+ http://35.180.210.32/analytics/topsofthetops?since=a
-+ http://35.180.210.32/analytics/topsofthetops?since=-5
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/user?id=a
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/enriched?limit=a
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/enriched?limit=-1
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops?since=a
++ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops?since=-5
