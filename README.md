@@ -92,11 +92,11 @@ Le debemos introducir nuestro correo y api key en el body:
 Ahora ya tenemos el token el cual podemos utilizar para realizar pruebas. Cada vez que realicemos una petición GET a nuestra api, tendremos que pasarle el token como header de autorización, es decir:
 Authorization Bearer token
 Asi, podremos realizar distintas pruebas:
-+ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/user?id=39518378
-+ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/
-+ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/streams/enriched?limit=3
-+ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops
-+ https://twitch-analytics-mikados-6959f6772683.herokuapp.com/analytics/topsofthetops?since=40
++ http://localhost:12000/analytics/user?id=39518378
++ http://localhost:12000/analytics/streams/
++ http://localhost:12000/analytics/streams/enriched?limit=3
++ http://localhost:12000/analytics/topsofthetops
++ http://localhost:12000/analytics/topsofthetops?since=40
 
 Además de estas pruebas, también puedes probar a dejar vacios o escribir una letra en los parámetros id, limit y since para ver que se muestran los errores correctamente.
 
