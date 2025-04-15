@@ -10,7 +10,7 @@ function registerUser($data): void
 {
 
     try {
-        if (!isset($data["email"])) { //email nulo
+        if (!isset($data["email"]) || trim($data['email']) == '') {
             respondWithError(400, "The email is mandatory");
             return;
         }
