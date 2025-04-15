@@ -1,28 +1,29 @@
 
 <?php
-function getStreams($accessToken, $clientId) {
+function getStreams($accessToken, $clientId)
+{
     $url = "https://api.twitch.tv/helix/streams";
-    $ch = curl_init($url);
+    $curlh = curl_init($url);
     $headers = ["Authorization: Bearer $accessToken", "Client-Id: $clientId", "Content-type: application/json"];
 
-    curl_setopt($ch, CURLOPT_HTTPGET, true);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($curlh, CURLOPT_HTTPGET, true);
+    curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
 
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
 
-    $response = curl_exec($ch);
+    $response = curl_exec($curlh);
 
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
     switch ($httpCode) {
         case 200:
             http_response_code(200);
             $data = json_decode($response, true);
-            if(isset($data["data"])){
+            if (isset($data["data"])) {
                 $resp = [];
                 foreach ($data["data"] as $stream) {
-                    if($stream["type"] == "live"){
+                    if ($stream["type"] == "live") {
                         $resp[] = [
                             "title" => $stream["title"],
                             "user_name" => $stream["user_name"],
@@ -42,7 +43,5 @@ function getStreams($accessToken, $clientId) {
             break;
     }
 
-    curl_close($ch);
+    curl_close($curlh);
 }
-
-?>
