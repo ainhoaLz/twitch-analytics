@@ -7,7 +7,9 @@ include 'UserRegistration.php';
 include 'TokenGenerator.php';
 include 'DatabaseFunctions.php';
 include 'TopStreamsCollection.php';
+
 use DateTime;
+
 header("Content-Type: application/json");
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
@@ -112,31 +114,29 @@ function isTokenValid(): bool
  */
 function handleRequest($accessToken, $clientId): void
 {
-    $requestPath = strtok($_SERVER["REQUEST_URI"], '?');
-    if ($requestPath == "/analytics/user") {
-        getUsers($accessToken, $clientId, $_GET['id']);
+    $requestMethod = $_SERVER['REQUEST_METHOD'];
+    $requestPath = strtok($_SERVER['REQUEST_URI'], '?');
+
+    $routes = [
+        'GET' => [
+            '/analytics/user' => fn() => getUsers($accessToken, $clientId, $_GET['id']),
+            '/analytics/streams' => fn() => getStreams($accessToken, $clientId),
+            '/analytics/streams/enriched' => fn() => getEnrichedStreams($accessToken, $clientId, $_GET['limit']),
+            '/analytics/topsofthetops' => fn() => getTopsofthetops($accessToken, $clientId, $_GET['since'] ?? '600'),
+        ],
+        'POST' => [
+            '/register' => fn() => registerUser(getBody()),
+            '/token' => fn() => generateToken(getBody()),
+        ],
+    ];
+    if (isset($routes[$requestMethod][$requestPath])) {
+        $routes[$requestMethod][$requestPath]();
         return;
     }
-    if ($requestPath == "/analytics/streams") {
-        getStreams($accessToken, $clientId);
-        return;
-    }
-    if ($requestPath == "/analytics/streams/enriched") {
-        getEnrichedStreams($accessToken, $clientId, $_GET['limit']);
-        return;
-    }
-    if ($requestPath == "/analytics/topsofthetops") {
-        getTopsofthetops($accessToken, $clientId, $_GET['since'] ?? '600');
-        return;
-    }
-    if ($requestPath == "/register") {
-        registerUser(getBody());
-        return;
-    }
-    if ($requestPath == "/token") {
-        generateToken(getBody());
-    }
+    http_response_code(405);
+    echo json_encode(["error" => "Method Not Allowed"]);
 }
+
 
 function getBody()
 {
