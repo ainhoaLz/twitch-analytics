@@ -141,13 +141,5 @@ function handleRequest($accessToken, $clientId): void
 function getBody()
 {
     $body = file_get_contents("php://input");
-
-    $data = json_decode($body, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        respondWithError(400, "Invalid JSON: Check that all required fields have valid values");
-        exit();
-    }
-
-    return $data;
+    return json_decode($body, true);
 }
