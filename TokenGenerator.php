@@ -60,8 +60,8 @@ function insertNewTokenToDB(?PDO $con, ?int $tokenId, int $user_id, string $toke
             ?,?,?,NOW(),NOW() + INTERVAL '3 days'
         )
     ";
-    $insertQuery = $con->prepare($sqlQuery);
-    if (!$insertQuery->execute([$tokenId, $user_id, $token])) {
+    $insertTokenQuery = $con->prepare($sqlQuery);
+    if (!$insertTokenQuery->execute([$tokenId, $user_id, $token])) {
         throw new Exception("Error inserting token to database.");
     }
 }

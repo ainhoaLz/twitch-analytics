@@ -1,14 +1,13 @@
-
 <?php
 
-function getEnrichedStreams($accessToken, $clientId, $limit)
+function getEnrichedStreams($accessToken, $clientId, $limit): void
 {
     $streams = get_streams($accessToken, $clientId);
     $resp = addDataToResponse($streams, $limit, $clientId, $accessToken);
     fetchResponse($resp);
 }
 
-function get_streams($accessToken, $clientId)
+function get_streams($accessToken, $clientId): array
 {
     $url = "https://api.twitch.tv/helix/streams";
     $headers = ["Authorization: Bearer $accessToken", "Client-Id: $clientId", "Content-type: application/json"];
@@ -19,29 +18,24 @@ function get_streams($accessToken, $clientId)
     return [null, $data['httpCode']];
 }
 
-function getStreamsFromTwitch($url, $headers)
+function getStreamsFromTwitch($url, $headers): array
 {
     $curlh = curl_init($url);
-
-
     curl_setopt($curlh, CURLOPT_HTTPGET, true);
     curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-
     curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-
     $response = curl_exec($curlh);
     $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
     curl_close($curlh);
-
     return [
         'response' => $response,
         'httpCode' => $httpCode
     ];
 }
 
-function processStreamData($response, $httpCode)
+function processStreamData($response, $httpCode): array
 {
     $data = json_decode($response, true);
     if (isset($data["data"])) {
@@ -72,50 +66,44 @@ function addDataToResponse($streams, $limit, $clientId, $accessToken)
     $limitedStreams = array_slice($streams[0], 0, $limit);
     return addUserInfo($limitedStreams, $accessToken, $clientId);
 }
-function isLimitValid($limit, $count)
+function isLimitValid($limit, $count): bool
 {
     return (ctype_digit($limit) && $limit > 0 && $limit <= $count);
 }
 
-function addUserInfo($stream, $accessToken, $clientId)
+function addUserInfo($stream, $accessToken, $clientId): array
 {
     $returnStream = $stream;
     $userIds = array_column($stream, "user_id");
     $url = "https://api.twitch.tv/helix/users?id=" . implode('&id=', $userIds);
     $headers = ["Authorization: Bearer $accessToken", "Client-Id: $clientId", "Content-type: application/json"];
     $data = getUsersFromTwitch($url, $headers);
-
     if ($data['httpCode'] != 200) {
         return [$data['httpCode'], null];
     }
     $users = fetchUserData($data['response']);
     addUserToStreams($returnStream, $users);
-
     return [$data['httpCode'], $returnStream];
 }
 
-function getUsersFromTwitch($url, $headers)
+function getUsersFromTwitch($url, $headers): array
 {
     $curlh = curl_init();
-
     curl_setopt($curlh, CURLOPT_URL, $url);
     curl_setopt($curlh, CURLOPT_HTTPGET, true);
     curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-
     curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-
     $response = curl_exec($curlh);
     $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
     curl_close($curlh);
-
     return [
         'response' => $response,
         'httpCode' => $httpCode
     ];
 }
-function fetchUserData($response)
+function fetchUserData($response): ?array
 {
     $data = json_decode($response, true);
     if (isset($data["data"])) {
@@ -131,11 +119,12 @@ function fetchUserData($response)
     return null;
 }
 
-function addUserToStreams($stream, $users)
+function addUserToStreams($stream, $users): void
 {
     foreach ($stream as $index => $s) {
         $userId = $s["user_id"];
-        if (isset($users[$userId])) { //verifico si existe un usuario con ese userId en users
+        if (isset($users[$userId])) {
+            //verifico si existe un usuario con ese userId en users
             //si existe añado dos claves al returnStream
             $stream[$index]["user_display_name"] = $users[$userId]["user_display_name"];
             $stream[$index]["profile_image_url"] = $users[$userId]["profile_image_url"];
@@ -143,7 +132,7 @@ function addUserToStreams($stream, $users)
     }
 }
 
-function fetchResponse($response)
+function fetchResponse($response): void
 {
     if ($response[0] == 200) {
         http_response_code(200);

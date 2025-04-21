@@ -18,15 +18,15 @@ function registerUser($data): void
             respondWithError(400, "The email must be a valid email address");
             return;
         }
-        $apiKey = bin2hex(random_bytes(16));
+        $api_key = bin2hex(random_bytes(16));
         $con = connectToDB();
         if (existsEmail($con, $data["email"])) {
-            updateDBWithNewApiKey($con, $apiKey, $data["email"]);
-            respondWithApiKey($apiKey);
+            updateDBWithNewApiKey($con, $api_key, $data["email"]);
+            respondWithApiKey($api_key);
             return;
         }
-        insertNewUserToDB($con, $data["email"], $apiKey, getNewUserId($con), date("Y-m-d H:i:s"));
-        respondWithApiKey($apiKey);
+        insertNewUserToDB($con, $data["email"], $api_key, getNewUserId($con), date("Y-m-d H:i:s"));
+        respondWithApiKey($api_key);
         return;
     } catch (Throwable $e) {
         respondWithError(500, "Internal server error.");

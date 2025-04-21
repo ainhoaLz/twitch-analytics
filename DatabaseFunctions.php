@@ -10,6 +10,7 @@ function connectToDB()
     $user = "uk0klbg1uescn";
     $password = "p4408a7b7ac517dbb23e0ff811487d6f0c68576d627ea50312b0c9835cd3e78b5";
     $port = 5432;
+
     try {
         $dsn = "pgsql:host=$host;port=$port;dbname=$database";
         return new PDO($dsn, $user, $password);
@@ -23,22 +24,31 @@ function updateDDBB($videos)
 {
     $con = connectToDB();
     $deleteQuery = "TRUNCATE TABLE public.top_games";
+
     try {
         $con->exec($deleteQuery);
         insertTopGamesToDDBB($con, $videos);
-        $con = null;
     } catch (PDOException $e) {
         echo "Error al insertar datos: " . $e->getMessage();
+    } finally {
+        $con = null;
     }
 }
 
 function insertTopGamesToDDBB($con, $videos)
 {
-    $insertQuery = "INSERT INTO public.top_games (game_id, game_name, user_name, total_videos, total_views, 
-                 most_viewed_title, most_viewed_views, most_viewed_duration, most_viewed_created_at, updated_at) 
-                VALUES (:game_id, :game_name, :user_name, :total_videos, :total_views,  :most_viewed_title,
-                        :most_viewed_views, :most_viewed_duration, :most_viewed_created_at, NOW())";
+    $insertQuery = "INSERT INTO public.top_games (
+                        game_id, game_name, user_name, total_videos, total_views,
+                        most_viewed_title, most_viewed_views, most_viewed_duration,
+                        most_viewed_created_at, updated_at
+                    ) VALUES (
+                        :game_id, :game_name, :user_name, :total_videos, :total_views,
+                        :most_viewed_title, :most_viewed_views, :most_viewed_duration,
+                        :most_viewed_created_at, NOW()
+                    )";
+
     $stmt = $con->prepare($insertQuery);
+
     foreach ($videos as $video) {
         $stmt->execute([
             ':game_id' => $video['game_id'],

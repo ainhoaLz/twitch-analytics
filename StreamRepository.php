@@ -1,20 +1,16 @@
-
 <?php
+
 function getStreams($accessToken, $clientId)
 {
     $url = "https://api.twitch.tv/helix/streams";
     $curlh = curl_init($url);
     $headers = ["Authorization: Bearer $accessToken", "Client-Id: $clientId", "Content-type: application/json"];
-
     curl_setopt($curlh, CURLOPT_HTTPGET, true);
     curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-
     curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-
     $response = curl_exec($curlh);
-
     $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
     if ($httpCode == 200) {
         http_response_code(200);
