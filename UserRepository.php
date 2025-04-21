@@ -11,7 +11,7 @@ function getUsers($accessToken, $clientId, $streamerId)
     curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-    $response = curl_exec($curlh);
+    $spiResponse = curl_exec($curlh);
     if (curl_errno($curlh)) {
         echo json_encode(["error" => "Error en la solicitud curl: " . curl_error($curlh)]);
         curl_close($curlh);
@@ -22,7 +22,7 @@ function getUsers($accessToken, $clientId, $streamerId)
     curl_close($curlh);
     http_response_code($httpCode);
     if ($httpCode == 200) {
-        $data = json_decode($response, true);
+        $data = json_decode($spiResponse, true);
         $user = $data['data'][0];
         echo json_encode($user);
         return;

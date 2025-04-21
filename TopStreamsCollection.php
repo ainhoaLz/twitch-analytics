@@ -178,15 +178,15 @@ function getTop3Games($accessToken, $clientId)
     if ($httpCode == 200) {
         $data = json_decode($response, true);
         if (isset($data["data"])) {
-            $resp = [];
+            $topGamesResponse = [];
             foreach ($data["data"] as $game) {
-                $resp[] = [
+                $topGamesResponse[] = [
                     "game_id" => $game["id"],
                     "game_name" => $game["name"]
                 ];
             }
             curl_close($curl_h);
-            return [$resp , $httpCode];
+            return [$topGamesResponse , $httpCode];
         }
     }
     curl_close($curl_h);
