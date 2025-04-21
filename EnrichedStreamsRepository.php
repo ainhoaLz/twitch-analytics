@@ -145,23 +145,24 @@ function addUserToStreams($stream, $users)
 
 function fetchResponse($response)
 {
-    switch ($response[0]) {
-        case 200:
-            http_response_code(200);
-            echo json_encode($response[1]);
-            break;
-        case 400:
-            http_response_code(400);
-            echo json_encode(["error" => "Invalid 'limit' parameter."]);
-            break;
-        case 401:
-            http_response_code(401);
-            echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
-            break;
-        case 500:
-            http_response_code(500);
-            echo json_encode(["error" => "Internal server error."]);
-            break;
+    if ($response[0] == 200) {
+        http_response_code(200);
+        echo json_encode($response[1]);
+        return;
+    }
+    if ($response[0] == 400) {
+        http_response_code(400);
+        echo json_encode(["error" => "Invalid 'limit' parameter."]);
+        return;
+    }
+    if ($response[0] == 401) {
+        http_response_code(401);
+        echo json_encode(["error" => "Unauthorized. Twitch access token is invalid or has expired."]);
+        return;
+    }
+    if ($response[0] == 500) {
+        http_response_code(500);
+        echo json_encode(["error" => "Internal server error."]);
     }
 }
 

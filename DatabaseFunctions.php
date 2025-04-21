@@ -5,7 +5,6 @@ use PDOException;
 
 function connectToDB()
 {
-
     $host = "c724r43q8jp5nk.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com";
     $database = "d4nk1746t10jil";
     $user = "uk0klbg1uescn";
@@ -19,8 +18,6 @@ function connectToDB()
         return null;
     }
 }
-
-
 
 function updateDDBB($videos)
 {
