@@ -8,6 +8,7 @@ include 'TokenGenerator.php';
 include 'DatabaseFunctions.php';
 include 'TopStreamsCollection.php';
 use DateTime;
+
 header("Content-Type: application/json");
 $clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
 $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
