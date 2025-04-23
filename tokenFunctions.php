@@ -65,7 +65,7 @@ function storeTokenInDDBB($con, $accessToken, $expiresIn)
 
     $expires_at = date("Y-m-d H:i:s", time() + $expiresIn);
     $insertQuery = $con -> prepare("INSERT INTO twitch_tokens (token, expires_at) VALUES (?, ?)");
-    $insertQuery -> execute($accessToken, $expires_at);
+    $insertQuery->execute([$accessToken, $expires_at]);
 }
 
 function isTokenValid(): bool
