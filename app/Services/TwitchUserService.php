@@ -22,7 +22,11 @@ class TwitchUserService
     {
         $url = "https://api.twitch.tv/helix/users?id=$streamerId";
         $curlh = curl_init();
-        $headers = ["Authorization: Bearer $this->accessToken", "Client-Id: $this->clientId", "Content-type: application/json"];
+        $headers = [
+            "Authorization: Bearer $this->accessToken",
+            "Client-Id: $this->clientId",
+            "Content-type: application/json"
+        ];
         curl_setopt($curlh, CURLOPT_URL, $url);
         curl_setopt($curlh, CURLOPT_HTTPGET, true);
         curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
@@ -44,16 +48,16 @@ class TwitchUserService
             return $data['data'][0];
         }
         if ($httpCode == 400) {
-            return ["error" => "Invalid or missing 'id' parameter."];
+            return respondWithError(400, "Invalid or missing 'id' parameter.");
         }
         if ($httpCode == 401) {
-            return ["error" => "Unauthorized. Twitch access token is invalid or has expired."];
+            return respondWithError(401, "Unauthorized. Twitch access token is invalid or has expired.");
         }
         if ($httpCode == 404) {
-            return ["error" => "User not found."];
+            return respondWithError(404, "User not found.");
         }
         if ($httpCode == 500) {
-            return ["error" => "Internal server error."];
+            return respondWithError(500, "Internal server error.");
         }
         return respondWithError($httpCode, "Error: $httpCode");
     }

@@ -8,10 +8,12 @@ use PDOException;
 class TopGamesUpdater
 {
     protected PDO $connection;
+    private DatabaseConnection $dbConnection;
 
-    public function __construct()
+    public function __construct(DatabaseConnection $dbConnection)
     {
-        $this->connection = DatabaseConnection::connect();
+        $this->dbConnection = $dbConnection;
+        $this->connection = $this->dbConnection->connect();
     }
 
     public function truncate(): void

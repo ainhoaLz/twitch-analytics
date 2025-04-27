@@ -5,20 +5,23 @@ namespace App\Services;
 use App\Helpers\ResponseHelper;
 use App\Repositories\TokenRepository;
 use PDO;
+use Symfony\Component\VarDumper\Cloner\Data;
 use Throwable;
 
 class TokenService
 {
     private ?PDO $connection;
+    private DatabaseConnection $dbConnection;
     private TokenRepository $tokenRepository;
 
-    public function __construct()
+    public function __construct(DatabaseConnection $dbConnection)
     {
-        $this->connection = DatabaseConnection::connect();
+        $this->dbConnection = $dbConnection;
+        $this->connection = $this->dbConnection->connect();
         $this->tokenRepository = new TokenRepository($this->connection);
     }
 
-    public function generateToken(array $data): array
+    public function generateToken(array|null $data): array
     {
         try {
             if ($this->emailIsNotInRequest($data)) {
@@ -51,6 +54,7 @@ class TokenService
             http_response_code(200);
             return ["token" => $token];
         } catch (Throwable $e) {
+            http_response_code(500);
             return respondWithError(500, "Internal server error.");
         }
     }

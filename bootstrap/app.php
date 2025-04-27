@@ -124,17 +124,10 @@ require_once __DIR__ . '/../app/Services/TwitchTokenService.php';
 require_once __DIR__ . '/../app/Repositories/TwitchTokenRepository.php';
 require_once __DIR__ . '/../app/Services/TokenService.php';
 require_once __DIR__ . '/../app/Repositories/TokenRepository.php';
-require_once __DIR__ . '/../app/Services/TopStreamsCollection.php';
+require_once __DIR__ . '/../app/Services/TopsofthetopsService.php';
 require_once __DIR__ . '/../app/Services/UserService.php';
 require_once __DIR__ . '/../app/Repositories/UserRepository.php';
 require_once __DIR__ . '/../app/Services/TwitchUserService.php';
+require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';
 
-//esto habria que ver donde meterlo (en un provider, crear un helper, etc)
-if (!function_exists('respondWithError')) {
-    function respondWithError(int $httpCode, string $message): array
-    {
-        http_response_code($httpCode);
-        return ["error" => $message];
-    }
-}
 return $app;

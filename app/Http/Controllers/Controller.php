@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\TwitchApi\TwitchUserRepository;
 use App\Repositories\UserRepository;
+use App\Services\DatabaseConnection;
 use App\Services\TokenService;
+use App\Services\TopsofthetopsService;
 use App\Services\TwitchEnrichedStreamService;
 use App\Services\TwitchStreamService;
 use App\Services\TwitchTokenService;
@@ -24,7 +25,7 @@ class Controller extends BaseController
         $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
         $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
 
-        $twitchService = new TwitchTokenService();
+        $twitchService = new TwitchTokenService(new DatabaseConnection());
         $this->accessToken = $twitchService->getToken($this->clientId, $clientSecret);
     }
 
@@ -38,9 +39,10 @@ class Controller extends BaseController
             return response()->json($tokenValidation, 401);
         }
         $twitchService = new TwitchUserService($this->accessToken, $this->clientId);
-        $user = $twitchService->getUser(request('id'));
-
-        return response()->json($user);
+        $response = $twitchService->getUser(request('id'));
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     /**
@@ -54,9 +56,10 @@ class Controller extends BaseController
         }
 
         $twitchStreamService = new TwitchStreamService();
-        $streams = $twitchStreamService->getStreams($this->accessToken, $this->clientId);
-
-        return response()->json($streams);
+        $response = $twitchStreamService->getStreams($this->accessToken, $this->clientId);
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     public function getEnrichedStreams(): \Illuminate\Http\JsonResponse
@@ -67,9 +70,10 @@ class Controller extends BaseController
         }
 
         $enrichedService = new TwitchEnrichedStreamService();
-        $streams = $enrichedService->getEnrichedStreams($this->accessToken, $this->clientId, request('limit'));
-
-        return response()->json($streams);
+        $response = $enrichedService->getEnrichedStreams($this->accessToken, $this->clientId, request('limit'));
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     /**
@@ -81,22 +85,30 @@ class Controller extends BaseController
         if ($tokenValidation != 200) {
             return response()->json($tokenValidation, 401);
         }
-        return response()->json(getTopsofthetops($this->accessToken, $this->clientId, request('since', '600')));
+        $service = new TopsofthetopsService(new DatabaseConnection());
+        $response = $service->getTopsofthetops($this->accessToken, $this->clientId, request('since', '600'));
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     public function registerUser(): \Illuminate\Http\JsonResponse
     {
-        $userRepository = new UserRepository();
+        $userRepository = new UserRepository(new DatabaseConnection());
         $userService = new UserService($userRepository);
         $response = $userService->register($this->getBody());
-        return response()->json($response);
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     public function generateToken(): \Illuminate\Http\JsonResponse
     {
-        $tokenService = new TokenService();
-        $result = $tokenService->generateToken($this->getBody());
-        return response()->json($result);
+        $tokenService = new TokenService(new DatabaseConnection());
+        $response = $tokenService->generateToken($this->getBody());
+        $httpCode = $response['httpCode'] ?? 200;
+        unset($response['httpCode']);
+        return response()->json($response, $httpCode);
     }
 
     private function getBody()
@@ -107,7 +119,7 @@ class Controller extends BaseController
 
     private function validateToken(): array|int
     {
-        $twitchService = new TwitchTokenService();
+        $twitchService = new TwitchTokenService(new DatabaseConnection());
         if ($_SERVER["REQUEST_METHOD"] == 'GET' && !$twitchService->isTokenValid()) {
             http_response_code(401);
             return ["error" => "Unauthorized. Token is invalid or expired."];

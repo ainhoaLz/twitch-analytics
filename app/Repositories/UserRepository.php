@@ -8,11 +8,13 @@ use PDO;
 
 class UserRepository
 {
+    private DatabaseConnection $dbConnection;
     private ?PDO $connection;
 
-    public function __construct()
+    public function __construct(DatabaseConnection $dbConnection)
     {
-        $this->connection = DatabaseConnection::connect();
+        $this->dbConnection = $dbConnection;
+        $this->connection = $this->dbConnection->connect();
     }
 
     public function existsByEmail(string $email): bool

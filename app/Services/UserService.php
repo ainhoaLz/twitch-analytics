@@ -14,7 +14,7 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function register(array $data): array
+    public function register(array|null $data): array
     {
         try {
             if (empty($data['email'])) {

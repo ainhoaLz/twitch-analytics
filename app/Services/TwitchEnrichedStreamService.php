@@ -158,19 +158,15 @@ class TwitchEnrichedStreamService
             return $response[1];
         }
         if ($response[0] == 400) {
-            http_response_code(400);
-            return ["error" => "Invalid 'limit' parameter."];
+            return respondWithError(400, "Invalid 'limit' parameter.");
         }
         if ($response[0] == 401) {
-            http_response_code(401);
-            return ["error" => "Unauthorized. Twitch access token is invalid or has expired."];
+            return respondWithError(401, "Unauthorized. Twitch access token is invalid or has expired.");
         }
         if ($response[0] == 500) {
-            http_response_code(500);
-            return ["error" => "Internal server error."];
+            return respondWithError(500, "Internal server error.");
         }
-        http_response_code($response[0]);
-        return ["error" => "Unknown error."];
+        return respondWithError($response[0], "Unknown error.");
     }
 
     private function ordenar($var1, $var2)

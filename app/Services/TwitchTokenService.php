@@ -9,11 +9,13 @@ use Throwable;
 class TwitchTokenService
 {
     private ?\PDO $connection;
+    private DatabaseConnection $dbConnection;
     private TwitchTokenRepository $twitchTokenRepo;
 
-    public function __construct()
+    public function __construct(DatabaseConnection $dbConnection)
     {
-        $this->connection = DatabaseConnection::connect();
+        $this->dbConnection = $dbConnection;
+        $this->connection = $this->dbConnection->connect();
         $this->twitchTokenRepo = new TwitchTokenRepository($this->connection);
     }
 
