@@ -196,7 +196,4 @@ class TopsofthetopsService
         curl_close($curl_h);
         return [null, $httpCode];
     }
-    public function sayHello(){
-    echo "Hello from TopsofthetopsService!";
-    }
 }
