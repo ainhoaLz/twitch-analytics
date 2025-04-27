@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5b04bfc8-1193-4da0-8f29-6e43ee796ffc" name="Changes" comment="?">
+      <change afterPath="$PROJECT_DIR$/lumen-app/.editorconfig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/.styleci.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Console/Commands/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Console/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Events/Event.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Events/ExampleEvent.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Exceptions/Handler.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Http/Controllers/Controller.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Http/Middleware/Authenticate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Http/Middleware/ExampleMiddleware.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Jobs/ExampleJob.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Jobs/Job.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Listeners/ExampleListener.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Models/User.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Providers/EventServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Repositories/TokenRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Repositories/TwitchTokenRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Repositories/UserRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/DatabaseConnection.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TokenService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TopGamesUpdater.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TwitchEnrichedStreamService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TwitchStreamService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TwitchTokenService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/TwitchUserService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/app/Services/UserService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/artisan" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/bootstrap/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/composer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/composer.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/database/factories/UserFactory.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/database/migrations/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/database/seeders/DatabaseSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/phpunit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/public/.htaccess" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/public/index.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/resources/views/.gitkeep" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/routes/web.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/storage/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/storage/framework/cache/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/storage/framework/cache/data/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/storage/framework/views/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/storage/logs/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/tests/ExampleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lumen-app/tests/TestCase.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.htaccess" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.php-cs-fixer.php" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/.php-cs-fixer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatabaseFunctions.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EnrichedStreamsRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Entrega2.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/Entrega2.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/StreamRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TokenGenerator.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TopStreamsCollection.php" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/app/Services/TopStreamsCollection.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserRegistration.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserRepository.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentacionAPI.html" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/documentacionAPI.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grumphp.yml" beforeDir="false" afterPath="$PROJECT_DIR$/lumen-app/grumphp.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/router.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tokenFunctions.php" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ParejaJulen&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ainhoaLz/twitch-analytics.git&quot;,
+    &quot;accountId&quot;: &quot;3653d720-791e-4908-b83f-7805be6de36c&quot;
+  }
+}</component>
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:\PHP\php.exe" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2t1zbU8NgRi6bpgyKC4c3jAD4gz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;53-pasar-a-lumen&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="Main" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner configuration_file="$PROJECT_DIR$/lumen-app/phpunit.xml" scope="XML" use_alternative_configuration_file="true" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PS-243.24978.50" />
+        <option value="bundled-php-predefined-a98d8de5180a-fbeb0b58ac0f-com.jetbrains.php.sharedIndexes-PS-243.24978.50" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5b04bfc8-1193-4da0-8f29-6e43ee796ffc" name="Changes" comment="" />
+      <created>1739534440485</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739534440485</updated>
+      <workItem from="1739534442375" duration="724000" />
+      <workItem from="1739535268874" duration="2186000" />
+      <workItem from="1739878406285" duration="1741000" />
+      <workItem from="1740989873733" duration="3077000" />
+      <workItem from="1741347849526" duration="36000" />
+      <workItem from="1745764366082" duration="1249000" />
+    </task>
+    <task id="LOCAL-00001" summary="?">
+      <option name="closed" value="true" />
+      <created>1740990134042</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1740990134042</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="?" />
+    <option name="LAST_COMMIT_MESSAGE" value="?" />
+  </component>
+</project>
