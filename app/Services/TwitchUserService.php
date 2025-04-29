@@ -18,7 +18,7 @@ class TwitchUserService
     /**
      * @throws Exception
      */
-    public function getUser(int|null $streamerId): array
+    public function getUser(mixed $streamerId): array
     {
         $url = "https://api.twitch.tv/helix/users?id=$streamerId";
         $curlh = curl_init();
