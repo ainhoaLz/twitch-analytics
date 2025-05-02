@@ -21,7 +21,7 @@ jobs:
 
       # 3) Instala dependencias
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist :contentReference[oaicite:3]{index=3}
+        run: composer install --no-interaction --prefer-dist
 
       # 4) Ejecuta GrumPHP sobre TODO el proyecto
       - name: Run GrumPHP
