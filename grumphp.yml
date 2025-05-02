@@ -1,7 +1,10 @@
 grumphp:
+    fixer:
+        enabled: true
+        fix_by_default: true
     tasks:
         phpcsfixer:
-            config: '.php-cs-fixer.php'
+            config: .php-cs-fixer.dist.php
         phpcs:
             standard: PSR12
         phpmd:
