@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'            # <- Cambia a la versión que uses :contentReference[oaicite:2]{index=2}
+          php-version: '8.2'            # <- Cambia a la versión que uses :contentReference[oaicite:2]{index=2}
           extensions: mbstring, xml     # <- Añade las extensiones que necesites
 
       # 3) Instala dependencias
