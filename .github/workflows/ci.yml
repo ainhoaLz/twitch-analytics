@@ -5,7 +5,7 @@ on:
 
 jobs:
   quality-check:
-    name: PR's validation/ Prepare_enviroment_and_run_linters
+    name: Code Quality Checks
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 4) Ejecuta GrumPHP
+      # 4) Ejecuta GrumPHP sobre TODO el proyecto
       - name: Run GrumPHP
         run: vendor/bin/grumphp run --verbose
 
@@ -38,15 +38,8 @@ jobs:
             --using-cache=no \
             --verbose
 
-      # 6) Ejecuta PHP_CodeSniffer (phpcs)
-      - name: Run PHPCS
-        run: |
-          vendor/bin/phpcs --standard=PSR12 \
-                           --extensions=php \
-                           --report=full \
-                           --ignore=vendor/*,node_modules/*,storage/*,bootstrap/cache/* .
-
-
-      # 7) Ejecuta PHP Mess Detector (phpmd)
+      # 6) Ejecuta PHP Mess Detector (phpmd), ignorando carpetas innecesarias
       - name: Run PHPMD
-        run: vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode
+        run: |
+          vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode \
+            --exclude vendor,node_modules,storage,bootstrap/cache
