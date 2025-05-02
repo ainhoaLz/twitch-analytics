@@ -16,14 +16,14 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'            # <- Cambia a la versión que uses :contentReference[oaicite:2]{index=2}
-          extensions: mbstring, xml     # <- Añade las extensiones que necesites
+          php-version: '8.2'
+          extensions: mbstring, xml
 
       # 3) Instala dependencias
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 4) Ejecuta GrumPHP sobre TODO el proyecto
+      # 4) Ejecuta GrumPHP
       - name: Run GrumPHP
         run: vendor/bin/grumphp run --verbose
 
@@ -37,3 +37,11 @@ jobs:
             --stop-on-violation \
             --using-cache=no \
             --verbose
+
+      # 6) Ejecuta PHP_CodeSniffer (phpcs)
+      - name: Run PHPCS
+        run: vendor/bin/phpcs --standard=PSR12 --extensions=php --report=full .
+
+      # 7) Ejecuta PHP Mess Detector (phpmd)
+      - name: Run PHPMD
+        run: vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode
