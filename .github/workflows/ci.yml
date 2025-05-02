@@ -5,7 +5,7 @@ on:
 
 jobs:
   quality-check:
-    name: Code Quality Checks
+    name: PR's validation / Prepare_enviroment_and_run_linters
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +16,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'            # <- Cambia a la versión que uses :contentReference[oaicite:2]{index=2}
-          extensions: mbstring, xml     # <- Añade las extensiones que necesites
+          php-version: '8.2'
+          extensions: mbstring, xml
 
       # 3) Instala dependencias
       - name: Install dependencies
@@ -37,3 +37,9 @@ jobs:
             --stop-on-violation \
             --using-cache=no \
             --verbose
+
+      # 6) Ejecuta PHP Mess Detector (phpmd), ignorando carpetas innecesarias
+      - name: Run PHPMD
+        run: |
+          vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode \
+            --exclude vendor,node_modules,storage,bootstrap/cache,app
