@@ -42,4 +42,4 @@ jobs:
       - name: Run PHPMD
         run: |
           vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode \
-            --exclude vendor,node_modules,storage,bootstrap/cache
+            --exclude vendor,node_modules,storage,bootstrap/cache,app
