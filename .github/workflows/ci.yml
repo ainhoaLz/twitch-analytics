@@ -25,7 +25,7 @@ jobs:
 
       # 4) Ejecuta GrumPHP sobre TODO el proyecto
       - name: Run GrumPHP
-        run: vendor/bin/grumphp run --verbose :contentReference[oaicite:4]{index=4}
+        run: vendor/bin/grumphp run --verbose
 
       # 5) Ejecuta PHP-CS-Fixer en modo comprobación
       - name: Run PHP-CS-Fixer
