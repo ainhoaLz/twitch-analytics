@@ -40,7 +40,12 @@ jobs:
 
       # 6) Ejecuta PHP_CodeSniffer (phpcs)
       - name: Run PHPCS
-        run: vendor/bin/phpcs --standard=PSR12 --extensions=php --report=full .
+        run: |
+          vendor/bin/phpcs --standard=PSR12 \
+                           --extensions=php \
+                           --report=full \
+                           --ignore=vendor/*,node_modules/*,storage/*,bootstrap/cache/* .
+
 
       # 7) Ejecuta PHP Mess Detector (phpmd)
       - name: Run PHPMD
