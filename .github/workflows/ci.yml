@@ -36,4 +36,4 @@ jobs:
             --diff \
             --stop-on-violation \
             --using-cache=no \
-            --verbose :contentReference[oaicite:5]{index=5}
+            --verbose
