@@ -5,7 +5,7 @@ on:
 
 jobs:
   quality-check:
-    name: Code Quality Checks
+    name: PR's validation/ Prepare_enviroment_and_run_linters
     runs-on: ubuntu-latest
 
     steps:
