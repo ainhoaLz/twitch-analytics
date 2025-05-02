@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  quality-check:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Obtiene el código
+      - uses: actions/checkout@v3
+
+      # 2) Configura PHP (ajusta la versión)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'            # <- Cambia a la versión que uses :contentReference[oaicite:2]{index=2}
+          extensions: mbstring, xml     # <- Añade las extensiones que necesites
+
+      # 3) Instala dependencias
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist :contentReference[oaicite:3]{index=3}
+
+      # 4) Ejecuta GrumPHP sobre TODO el proyecto
+      - name: Run GrumPHP
+        run: vendor/bin/grumphp run --verbose :contentReference[oaicite:4]{index=4}
+
+      # 5) Ejecuta PHP-CS-Fixer en modo comprobación
+      - name: Run PHP-CS-Fixer
+        run: |
+          vendor/bin/php-cs-fixer fix \
+            --config=.php-cs-fixer.dist.php \
+            --dry-run \
+            --diff \
+            --stop-on-violation \
+            --using-cache=no \
+            --verbose :contentReference[oaicite:5]{index=5}
