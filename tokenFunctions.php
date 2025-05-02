@@ -1,5 +1,5 @@
 <?php
-//Este comentario carece del espacio obligatorio tras los slashes
+
 use DateTime;
 
 /**
