@@ -18,11 +18,11 @@ class UserService
     {
         try {
             if (empty($data['email'])) {
-                return respondWithError(400, "The email is mandatory.");
+                return respondWithError(400, "The email is mandatory");
             }
 
             if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                return respondWithError(400, "The email must be a valid email address.");
+                return respondWithError(400, "The email must be a valid email address");
             }
 
             $apiKey = bin2hex(random_bytes(16));

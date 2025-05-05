@@ -74,7 +74,7 @@ class TopsofthetopsService
             return respondWithError(404, "Not Found. No data available.");
         }
         if ($httpCode == 500) {
-            return respondWithError(500, "Internal Server Error. Please try again later.");
+            return respondWithError(500, "Internal server error.");
         }
         return respondWithError($httpCode, "Error: $httpCode");
     }
