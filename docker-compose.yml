@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  lumen:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/mikados/twitch-analytics
+    container_name: twitch-analytics-api
