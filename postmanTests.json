@@ -1,0 +1,1723 @@
+{
+	"info": {
+		"_postman_id": "9d0fe1ed-bf9b-413d-be79-bcf192a0e954",
+		"name": "Twitch Analytics Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41707418",
+		"_collection_link": "https://dark-crescent-675188.postman.co/workspace/Team-Workspace~563b8f5b-d7e6-4f27-8843-8bd952ea8634/collection/33079303-9d0fe1ed-bf9b-413d-be79-bcf192a0e954?action=share&source=collection_link&creator=41707418"
+	},
+	"item": [
+		{
+			"name": "analytics/topsofthetops",
+			"item": [
+				{
+					"name": "/topsofthetops",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has required keys and correct types\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item).to.have.property(\"game_id\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"game_name\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"user_name\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"total_videos\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"total_views\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_title\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_views\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_duration\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_created_at\").that.is.a(\"string\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Duration fields match expected format\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    const durationRegex = /^\\d+h\\d+m\\d+s$/;\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.most_viewed_duration).to.match(durationRegex);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Total views is greater than 0\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.total_views).to.be.above(0);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Most viewed views not exceeding total views\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.most_viewed_views).to.be.at.most(item.total_views);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ec235116c4d70c18aa0b806d3005a6e0f9f6e69088b6fedb7aa82d027bd8d8cd",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/topsofthetops",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"topsofthetops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/topsofthetops?since=10",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"At least 3 items in the response\", function () {\r",
+									"    pm.expect(pm.response.json().length).to.be.at.least(3);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has required keys and correct types\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item).to.have.property(\"game_id\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"game_name\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"user_name\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"total_videos\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"total_views\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_title\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_views\").that.is.a(\"number\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_duration\").that.is.a(\"string\");\r",
+									"        pm.expect(item).to.have.property(\"most_viewed_created_at\").that.is.a(\"string\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Duration fields match expected format\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    const durationRegex = /^\\d+h\\d+m\\d+s$/;\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.most_viewed_duration).to.match(durationRegex);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Total views is greater than 0\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.total_views).to.be.above(0);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Most viewed views not exceeding total views\", function () {\r",
+									"    const items = pm.response.json();\r",
+									"    items.forEach(item => {\r",
+									"        pm.expect(item.most_viewed_views).to.be.at.most(item.total_views);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ec235116c4d70c18aa0b806d3005a6e0f9f6e69088b6fedb7aa82d027bd8d8cd",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/topsofthetops?since=10",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"topsofthetops"
+							],
+							"query": [
+								{
+									"key": "since",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/topsofthetops?since=-1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta correcta de error 400 al poner el parametro since en negativo\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'since' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer af994ebf518503ed3aaba3bb92cfb94011f9b99e2d3cbbb20d6a572714a9de16",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/topsofthetops?since=-1",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"topsofthetops"
+							],
+							"query": [
+								{
+									"key": "since",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/topsofthetops?since=",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta correcta de error 400\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'since' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ec235116c4d70c18aa0b806d3005a6e0f9f6e69088b6fedb7aa82d027bd8d8cd",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/topsofthetops?since=",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"topsofthetops"
+							],
+							"query": [
+								{
+									"key": "since",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/topsofthetops?since=a",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Respuesta correcta de error 400\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'since' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer ec235116c4d70c18aa0b806d3005a6e0f9f6e69088b6fedb7aa82d027bd8d8cd",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/topsofthetops?since=a",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"topsofthetops"
+							],
+							"query": [
+								{
+									"key": "since",
+									"value": "a"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/token",
+			"item": [
+				{
+					"name": "obtener token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"El JSON contiene 'token'\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"token\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n    \"email\": \"mikel@gmail.com\", \r\n    \"api_key\": \"1e7d878caa3df7c565e04d5e82115224\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/token",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_key null",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta correcta de error 400 con api_key no proporcionado\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The api_key is mandatory\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"asier@gmail.com\",\r\n    \"api_key\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/token",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unahuthorized token error",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta correcta de error 401 ser un usuario sin autorizar\", function () {\r",
+									"    pm.response.to.have.status(401); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Unauthorized. API access token is invalid.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nouser@gmail.com\",\r\n    \"api_key\": \"556964810dbc51760fc64089a8c2394f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/token",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "email no valido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Respuesta correcta de error 400 al poner un email incorrecto\", function () {\r",
+									"    pm.response.to.have.status(400); \r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The email must be a valid email address\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nomail\",\r\n    \"api_key\": \"556964810dbc51760fc64089a8c2394f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/token",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "analytics/user",
+			"item": [
+				{
+					"name": "/user?id=39518378",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"El JSON contiene las propiedades necesarias\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"login\");\r",
+									"    pm.expect(jsonData).to.have.property(\"display_name\");\r",
+									"    pm.expect(jsonData).to.have.property(\"type\");\r",
+									"    pm.expect(jsonData).to.have.property(\"broadcaster_type\");\r",
+									"    pm.expect(jsonData).to.have.property(\"description\");\r",
+									"    pm.expect(jsonData).to.have.property(\"profile_image_url\");\r",
+									"    pm.expect(jsonData).to.have.property(\"offline_image_url\");\r",
+									"    pm.expect(jsonData).to.have.property(\"view_count\");\r",
+									"    pm.expect(jsonData).to.have.property(\"created_at\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 65eca2fefe9ddc30f86214cdd5b39056d3b795aa849d356f5c2063c90672c953",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?id=39518378",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "39518378"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user?",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Mensaje de respuesta: Invalid or missing 'id' parameter.\", function () {\r",
+									"\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'id' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 0bc2e63fa63b79808f86c98fd1e1a1252cc34b9e66b88b27c85ea014bab24eaa",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user?id=-1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Mensaje de respuesta: Invalid or missing 'id' parameter.\", function () {\r",
+									"\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'id' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 0bc2e63fa63b79808f86c98fd1e1a1252cc34b9e66b88b27c85ea014bab24eaa",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?id=-1",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user?id=",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Mensaje de respuesta: Invalid or missing 'id' parameter.\", function () {\r",
+									"\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'id' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 0bc2e63fa63b79808f86c98fd1e1a1252cc34b9e66b88b27c85ea014bab24eaa",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?id=",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user?id=a",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Mensaje de respuesta: Invalid or missing 'id' parameter.\", function () {\r",
+									"\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'id' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 0bc2e63fa63b79808f86c98fd1e1a1252cc34b9e66b88b27c85ea014bab24eaa",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?id=a",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user?id={Inexistente}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"pm.test(\"Mensaje de respuesta: Invalid or missing 'id' parameter.\", function () {\r",
+									"\r",
+									"    pm.response.to.have.status(400);\r",
+									"\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid or missing 'id' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer af994ebf518503ed3aaba3bb92cfb94011f9b99e2d3cbbb20d6a572714a9de16",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/user?id=145678765434",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "145678765434"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "analytics/streams",
+			"item": [
+				{
+					"name": "/streams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"La respuesta contiene un array 'streams'\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Cada stream tiene los campos 'title' y 'user_name'\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    \r",
+									"    // Verifica que cada objeto en el array tenga estos campos\r",
+									"    jsonData.forEach(stream => {\r",
+									"        pm.expect(stream).to.have.property(\"title\");\r",
+									"        pm.expect(stream).to.have.property(\"user_name\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 0bc2e63fa63b79808f86c98fd1e1a1252cc34b9e66b88b27c85ea014bab24eaa",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams/enriched",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error en el parámetro limit\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid 'limit' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 65eca2fefe9ddc30f86214cdd5b39056d3b795aa849d356f5c2063c90672c953",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams/enriched",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams",
+								"enriched"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams/enriched?",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error en el parámetro limit\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid 'limit' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 65eca2fefe9ddc30f86214cdd5b39056d3b795aa849d356f5c2063c90672c953",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams/enriched?",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams",
+								"enriched"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams/enriched?limit=3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response is a JSON array\", function () {\r",
+									"    pm.response.to.be.withBody;\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(Array.isArray(jsonData)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item has expected properties\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach(item => {\r",
+									"        pm.expect(item).to.have.property(\"stream_id\");\r",
+									"        pm.expect(item).to.have.property(\"user_id\");\r",
+									"        pm.expect(item).to.have.property(\"user_name\");\r",
+									"        pm.expect(item).to.have.property(\"viewer_count\");\r",
+									"        pm.expect(item).to.have.property(\"title\");\r",
+									"        pm.expect(item).to.have.property(\"user_display_name\");\r",
+									"        pm.expect(item).to.have.property(\"profile_image_url\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Viewer count is a number\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach(item => {\r",
+									"        pm.expect(item.viewer_count).to.be.a(\"number\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User names are strings\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    jsonData.forEach(item => {\r",
+									"        pm.expect(item.user_name).to.be.a(\"string\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams/enriched?limit=3",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams",
+								"enriched"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams/enriched?limit=a",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error en el parámetro limit\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid 'limit' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 65eca2fefe9ddc30f86214cdd5b39056d3b795aa849d356f5c2063c90672c953",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams/enriched?limit=a",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams",
+								"enriched"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "streams/enriched?limit=-1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error en el parámetro limit\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"Invalid 'limit' parameter.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							},
+							{
+								"key": "Bearer",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer 65eca2fefe9ddc30f86214cdd5b39056d3b795aa849d356f5c2063c90672c953",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base-uri}}/analytics/streams/enriched?limit=-1",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"analytics",
+								"streams",
+								"enriched"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/register",
+			"item": [
+				{
+					"name": "/register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"El JSON contiene 'api_key'\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"api_key\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"ainhoa@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/register",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid email 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The email must be a valid email address\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The email must be a valid email address\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"estonoesunemail\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/register",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid email 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The email must be a valid email address\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The email must be a valid email address\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/register",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "email null 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The email is mandatory\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The email is mandatory\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/register",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "email null 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The email is mandatory\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error).to.eql(\"The email is mandatory\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-uri}}/register",
+							"host": [
+								"{{base-uri}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{Authorization}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Authorization",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
