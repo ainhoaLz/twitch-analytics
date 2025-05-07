@@ -13,9 +13,23 @@
 |
 */
 
-$router->get('/analytics/user', 'Controller@getUsers');
-$router->get('/analytics/streams', 'Controller@getStreams');
-$router->get('/analytics/streams/enriched', 'Controller@getEnrichedStreams');
-$router->get('/analytics/topsofthetops', 'Controller@getTopsofthetops');
-$router->post('/register', 'Controller@registerUser');
-$router->post('/token', 'Controller@generateToken');
+use App\Http\Controllers;
+$router->get('/analytics/user', [
+    'uses' => 'GetUserController',
+]);
+
+$router->get('/analytics/streams', [
+    'uses' => 'GetStreamsController',
+]);
+$router->get('/analytics/streams/enriched', [
+    'uses' => 'GetEnrichedStreamsController',
+]);
+$router->get('/analytics/topsofthetops', [
+    'uses' => 'GetTopsOfTheTopsController',
+]);
+$router->post('/register', [
+    'uses' => 'RegisterController',
+]);
+$router->post('/token', [
+    'uses' => 'TokenController',
+]);
