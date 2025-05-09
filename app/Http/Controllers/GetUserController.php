@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Services\DatabaseConnection;
 use App\Services\TwitchTokenService;
 use App\Services\TwitchUserService;
@@ -14,7 +15,8 @@ class GetUserController extends BaseController
     private string $clientId;
     private Controller $controller;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
         $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
         $twitchService = new TwitchTokenService(new DatabaseConnection());

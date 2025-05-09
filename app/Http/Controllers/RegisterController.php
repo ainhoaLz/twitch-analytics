@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Repositories\UserRepository;
 use App\Services\DatabaseConnection;
 use App\Services\UserService;

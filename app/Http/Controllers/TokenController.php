@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Services\DatabaseConnection;
 use App\Services\TokenService;
 use Illuminate\Http\Request;

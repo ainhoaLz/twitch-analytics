@@ -14,6 +14,7 @@
 */
 
 use App\Http\Controllers;
+
 $router->get('/analytics/user', [
     'uses' => 'GetUserController',
 ]);
