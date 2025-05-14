@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\GetStreams;
 
+use App\Http\Controllers\Controller;
 use App\Services\DatabaseConnection;
-use App\Services\TwitchEnrichedStreamService;
+use App\Services\TwitchStreamService;
 use App\Services\TwitchTokenService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Laravel\Lumen\Routing\Controller as BaseController;
 
-class GetEnrichedStreamsController
+class GetStreamsController extends BaseController
 {
     private string $accessToken;
     private string $clientId;
@@ -23,15 +25,19 @@ class GetEnrichedStreamsController
         $this->controller = new Controller();
     }
 
+
+    /**
+     * @throws \Exception
+     */
     public function __invoke(Request $request): JsonResponse
     {
-        $tokenValidation = $this->controller->validateToken();
+        $tokenValidation = $this->controller->validateToken($request);
         if ($tokenValidation != 200) {
             return response()->json($tokenValidation, 401);
         }
 
-        $enrichedService = new TwitchEnrichedStreamService();
-        $response = $enrichedService->getEnrichedStreams($this->accessToken, $this->clientId, request('limit'));
+        $twitchStreamService = new TwitchStreamService();
+        $response = $twitchStreamService->getStreams($this->accessToken, $this->clientId);
         $httpCode = $response['httpCode'] ?? 200;
         unset($response['httpCode']);
         return response()->json($response, $httpCode);

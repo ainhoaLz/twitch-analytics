@@ -24,18 +24,6 @@ class TokenService
     public function generateToken(array|null $data): array
     {
         try {
-            if ($this->emailIsNotInRequest($data)) {
-                return respondWithError(400, "The email is mandatory");
-            }
-
-            if ($this->apiKeyIsNotInRequest($data)) {
-                return respondWithError(400, "The api_key is mandatory");
-            }
-
-            if ($this->emailIsNotValid($data["email"])) {
-                return respondWithError(400, "The email must be a valid email address");
-            }
-
             $userId = $this->getUserId($data["email"], $data["api_key"]);
             if (empty($userId)) {
                 return respondWithError(401, "Unauthorized. API access token is invalid.");
@@ -64,32 +52,5 @@ class TokenService
         $stmt = $this->connection->prepare("SELECT id FROM users WHERE email = ? AND api_key = ?");
         $stmt->execute([$email, $apiKey]);
         return $stmt->fetchColumn() ?: null;
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
-    public function emailIsNotInRequest(array $data): bool
-    {
-        return !isset($data["email"]) || trim($data['email']) === '';
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
-    public function apiKeyIsNotInRequest(array $data): bool
-    {
-        return !isset($data["api_key"]) || trim($data['api_key']) === '';
-    }
-
-    /**
-     * @param $email
-     * @return bool
-     */
-    public function emailIsNotValid($email): bool
-    {
-        return !filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 }
