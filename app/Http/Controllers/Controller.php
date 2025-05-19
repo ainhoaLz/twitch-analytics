@@ -12,7 +12,6 @@ class Controller extends BaseController
     public function __construct()
     {
     }
-
     public function validateToken(Request $request): array|int
     {
         $twitchService = new TwitchTokenService(new DatabaseConnection());
