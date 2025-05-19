@@ -18,11 +18,8 @@ class TopsofthetopsService
     /**
      * @throws \DateMalformedStringException
      */
-    public function getTopsofthetops(string $accessToken, string $clientId, mixed $since): array
+    public function getTopsofthetops(string $accessToken, string $clientId, int $since): array
     {
-        if (!ctype_digit($since) || 0 > $since) {
-            return respondWithError(400, "Invalid or missing 'since' parameter.");
-        }
         $checkQuery = $this->connection->query("SELECT updated_at from top_games");
         $row = $checkQuery->fetch();
         if (!$row) {

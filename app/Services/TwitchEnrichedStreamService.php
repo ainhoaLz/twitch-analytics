@@ -74,6 +74,7 @@ class TwitchEnrichedStreamService
         if (!$this->isLimitValid($limit, count($streams[0]))) {
             return [400, null];
         }
+
         $limitedStreams = array_slice($streams[0], 0, $limit);
 
         return $this->addUserInfo($limitedStreams, $accessToken, $clientId);
@@ -81,7 +82,7 @@ class TwitchEnrichedStreamService
 
     private function isLimitValid($limit, $count): bool
     {
-        return (ctype_digit((string) $limit) && $limit > 0 && $limit <= $count);
+        return ($limit <= $count);
     }
 
     private function addUserInfo($stream, $accessToken, $clientId): array

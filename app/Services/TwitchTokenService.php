@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\TwitchTokenRepository;
 use DateTime;
+use Illuminate\Http\Request;
 use Throwable;
 
 class TwitchTokenService
@@ -73,8 +74,9 @@ class TwitchTokenService
         return $response;
     }
 
-    public function isTokenValid(): bool
+    public function isTokenValid(Request $request): bool
     {
+        //        $headers = $request->headers->all(); no funciona ahora mismo
         $headers = getAllHeaders();
         if (!isset($headers['Authorization'])) {
             return false;

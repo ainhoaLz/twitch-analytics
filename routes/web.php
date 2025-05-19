@@ -12,25 +12,24 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
 use App\Http\Controllers;
 
 $router->get('/analytics/user', [
-    'uses' => 'GetUserController',
+    'uses' => 'GetUserById\GetUserByIdController',
 ]);
 
 $router->get('/analytics/streams', [
-    'uses' => 'GetStreamsController',
+    'uses' => 'GetStreams\GetStreamsController',
 ]);
 $router->get('/analytics/streams/enriched', [
-    'uses' => 'GetEnrichedStreamsController',
+    'uses' => 'GetEnrichedStreams\GetEnrichedStreamsController',
 ]);
 $router->get('/analytics/topsofthetops', [
-    'uses' => 'GetTopsOfTheTopsController',
+    'uses' => 'GetTopsOfTheTops\GetTopsOfTheTopsController',
 ]);
 $router->post('/register', [
-    'uses' => 'RegisterController',
+    'uses' => 'Register\RegisterController',
 ]);
 $router->post('/token', [
-    'uses' => 'TokenController',
+    'uses' => 'Token\TokenController',
 ]);

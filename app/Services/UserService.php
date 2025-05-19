@@ -14,27 +14,19 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function register(array|null $data): array
+    public function register(string $email): array
     {
         try {
-            if (empty($data['email'])) {
-                return respondWithError(400, "The email is mandatory");
-            }
-
-            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                return respondWithError(400, "The email must be a valid email address");
-            }
-
             $apiKey = bin2hex(random_bytes(16));
 
-            if ($this->userRepository->existsByEmail($data['email'])) {
-                $this->userRepository->updateApiKeyByEmail($data['email'], $apiKey);
+            if ($this->userRepository->existsByEmail($email)) {
+                $this->userRepository->updateApiKeyByEmail($email, $apiKey);
                 return $this->respondWithApiKey($apiKey);
             }
 
             $userId = $this->userRepository->getNextUserId();
             $createdAt = date("Y-m-d H:i:s");
-            $this->userRepository->insertNewUser($data['email'], $apiKey, $userId, $createdAt);
+            $this->userRepository->insertNewUser($email, $apiKey, $userId, $createdAt);
 
             return $this->respondWithApiKey($apiKey);
         } catch (Throwable $e) {
