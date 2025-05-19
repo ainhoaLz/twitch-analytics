@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Http\Controllers\Register\RegisterController;
+use App\Controllers\Register\RegisterController;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 

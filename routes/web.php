@@ -12,7 +12,7 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-use App\Http\Controllers;
+use App\Controllers;
 
 $router->get('/analytics/user', [
     'uses' => 'GetUserById\GetUserByIdController',
