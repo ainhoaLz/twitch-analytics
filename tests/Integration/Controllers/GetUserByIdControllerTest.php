@@ -2,9 +2,8 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\GetUserById\GetUserByIdController;
-use App\Http\Controllers\GetUserById\GetUserByIdValidator;
+use App\Controllers\Controller;
+use App\Controllers\GetUserById\GetUserByIdController;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;

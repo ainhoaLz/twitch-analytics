@@ -2,9 +2,8 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\GetTopsOfTheTops\GetTopsOfTheTopsController;
-use App\Http\Controllers\GetUserById\GetUserByIdController;
+use App\Controllers\Controller;
+use App\Controllers\GetTopsOfTheTops\GetTopsOfTheTopsController;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;

@@ -2,8 +2,8 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\GetEnrichedStreams\GetEnrichedStreamsController;
+use App\Controllers\Controller;
+use App\Controllers\GetEnrichedStreams\GetEnrichedStreamsController;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;

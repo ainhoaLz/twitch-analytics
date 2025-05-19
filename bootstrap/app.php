@@ -48,6 +48,44 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->singleton(
+    App\Domain\Interfaces\TokenRepositoryInterface::class,
+    function () {
+        return new App\Infrastructure\Repositories\TokenRepository(
+            App\Application\Services\DatabaseConnection::connect()
+        );
+    }
+);
+
+$app->singleton(
+    App\Domain\Interfaces\TwitchTokenRepositoryInterface::class,
+    function ($app) {
+        return new App\Infrastructure\Repositories\TwitchTokenRepository(
+            App\Application\Services\DatabaseConnection::connect()
+        );
+    }
+);
+
+$app->singleton(
+    App\Application\Services\DatabaseConnection::class,
+    function () {
+        return new App\Application\Services\DatabaseConnection();
+    }
+);
+
+$app->singleton(
+    App\Domain\Interfaces\UserRepositoryInterface::class,
+    function ($app) {
+        return new App\Infrastructure\Repositories\UserRepository(
+            $app->make(App\Application\Services\DatabaseConnection::class)
+        );
+    }
+);
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -106,7 +144,7 @@ $app->configure('app');
 */
 
 $app->router->group([
-    'namespace' => 'App\Http\Controllers',
+    'namespace' => 'App\Controllers',
 ], function ($router) {
     require __DIR__ . '/../routes/web.php';
 });
@@ -116,18 +154,18 @@ $app->router->group([
 /*
  * esto es temporal, es para ver que funciona de momento sin tener que organizar bien todos los archivos
  */
-require_once __DIR__ . '/../app/Services/DatabaseConnection.php';
-require_once __DIR__ . '/../app/Services/TopGamesUpdater.php';
-require_once __DIR__ . '/../app/Services/TwitchEnrichedStreamService.php';
-require_once __DIR__ . '/../app/Services/TwitchStreamService.php';
-require_once __DIR__ . '/../app/Services/TwitchTokenService.php';
-require_once __DIR__ . '/../app/Repositories/TwitchTokenRepository.php';
-require_once __DIR__ . '/../app/Services/TokenService.php';
-require_once __DIR__ . '/../app/Repositories/TokenRepository.php';
-require_once __DIR__ . '/../app/Services/TopsofthetopsService.php';
-require_once __DIR__ . '/../app/Services/UserService.php';
-require_once __DIR__ . '/../app/Repositories/UserRepository.php';
-require_once __DIR__ . '/../app/Services/TwitchUserService.php';
+require_once __DIR__ . '/../app/Application/Services/DatabaseConnection.php';
+require_once __DIR__ . '/../app/Application/Services/TopGamesUpdater.php';
+require_once __DIR__ . '/../app/Application/Services/TwitchEnrichedStreamService.php';
+require_once __DIR__ . '/../app/Application/Services/TwitchStreamService.php';
+require_once __DIR__ . '/../app/Application/Services/TwitchTokenService.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/TwitchTokenRepositoryInterface.php';
+require_once __DIR__ . '/../app/Application/Services/TokenService.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/TokenRepositoryInterface.php';
+require_once __DIR__ . '/../app/Application/Services/TopsofthetopsService.php';
+require_once __DIR__ . '/../app/Application/Services/UserService.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/UserRepositoryInterface.php';
+require_once __DIR__ . '/../app/Application/Services/TwitchUserService.php';
 require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';
 
 return $app;

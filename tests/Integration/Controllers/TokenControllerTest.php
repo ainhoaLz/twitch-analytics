@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Http\Controllers\Token\TokenController;
+use App\Controllers\Token\TokenController;
 use Exception;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
