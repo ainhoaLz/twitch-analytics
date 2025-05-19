@@ -52,7 +52,7 @@ $app->singleton(
     App\Domain\Interfaces\TokenRepositoryInterface::class,
     function () {
         return new App\Infrastructure\Repositories\TokenRepository(
-            App\Application\Services\DatabaseConnection::connect()
+            \App\Infrastructure\Database\DatabaseConnection::connect()
         );
     }
 );
@@ -61,15 +61,15 @@ $app->singleton(
     App\Domain\Interfaces\TwitchTokenRepositoryInterface::class,
     function ($app) {
         return new App\Infrastructure\Repositories\TwitchTokenRepository(
-            App\Application\Services\DatabaseConnection::connect()
+            \App\Infrastructure\Database\DatabaseConnection::connect()
         );
     }
 );
 
 $app->singleton(
-    App\Application\Services\DatabaseConnection::class,
+    \App\Infrastructure\Database\DatabaseConnection::class,
     function () {
-        return new App\Application\Services\DatabaseConnection();
+        return new \App\Infrastructure\Database\DatabaseConnection();
     }
 );
 
@@ -77,7 +77,16 @@ $app->singleton(
     App\Domain\Interfaces\UserRepositoryInterface::class,
     function ($app) {
         return new App\Infrastructure\Repositories\UserRepository(
-            $app->make(App\Application\Services\DatabaseConnection::class)
+            $app->make(\App\Infrastructure\Database\DatabaseConnection::class)
+        );
+    }
+);
+
+$app->singleton(
+    App\Domain\Interfaces\TopGamesRepositoryInterface::class,
+    function ($app) {
+        return new App\Infrastructure\Repositories\TopGamesRepository(
+            $app->make(\App\Infrastructure\Database\DatabaseConnection::class)
         );
     }
 );
@@ -154,8 +163,8 @@ $app->router->group([
 /*
  * esto es temporal, es para ver que funciona de momento sin tener que organizar bien todos los archivos
  */
-require_once __DIR__ . '/../app/Application/Services/DatabaseConnection.php';
-require_once __DIR__ . '/../app/Application/Services/TopGamesUpdater.php';
+
+require_once __DIR__ . '/../app/Domain/Interfaces/TopGamesRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchEnrichedStreamService.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchStreamService.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchTokenService.php';
@@ -167,5 +176,6 @@ require_once __DIR__ . '/../app/Application/Services/UserService.php';
 require_once __DIR__ . '/../app/Domain/Interfaces/UserRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchUserService.php';
 require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';
+require_once __DIR__ . '/../app/Infrastructure/Database/DatabaseConnection.php';
 
 return $app;

@@ -2,9 +2,9 @@
 
 namespace App\Controllers\Token;
 
-use App\Application\Services\DatabaseConnection;
 use App\Application\Services\TokenService;
 use App\Controllers\ValidationException;
+use App\Infrastructure\Database\DatabaseConnection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -12,21 +12,22 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class TokenController extends BaseController
 {
     private TokenValidator $validator;
-    public function __construct()
+    private TokenService $tokenService;
+    public function __construct(TokenService $tokenService)
     {
         $this->validator = new TokenValidator();
+        $this->tokenService = $tokenService;
     }
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            $tokenService = new TokenService(new DatabaseConnection());
             $email = $this->validator->validateEmail($request->input('email'));
             $apiKey = $this->validator->validateApiKey($request->input('api_key'));
             $data = [
                 'email' => $email,
                 'api_key' => $apiKey,
             ];
-            $response = $tokenService->generateToken($data);
+            $response = $this->tokenService->generateToken($data);
             $httpCode = $response['httpCode'] ?? 200;
             unset($response['httpCode']);
             return response()->json($response, $httpCode);

@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Application\Services;
+namespace App\Infrastructure\Repositories;
 
+use App\Domain\Interfaces\TopGamesRepositoryInterface;
+use App\Infrastructure\Database\DatabaseConnection;
 use PDO;
 use PDOException;
 
-class TopGamesUpdater
+class TopGamesRepository implements TopGamesRepositoryInterface
 {
     protected PDO $connection;
     private DatabaseConnection $dbConnection;
@@ -29,7 +31,6 @@ class TopGamesUpdater
 
     public function update(array $videos): void
     {
-
         try {
             $this->truncate();
             $this->insertTopGames($videos);
@@ -65,5 +66,30 @@ class TopGamesUpdater
                 ':most_viewed_created_at' => $video['most_viewed_created_at']
             ]);
         }
+    }
+
+    public function getUpdatedAt(): array
+    {
+        $checkQuery = $this->connection->query("SELECT updated_at from top_games");
+        return $checkQuery->fetch();
+    }
+
+    public function getTopGames(): array
+    {
+        $sqlQuery = "
+        SELECT
+            game_id,
+            game_name,
+            user_name,
+            total_videos,
+            total_views,
+            most_viewed_title,
+            most_viewed_views,
+            most_viewed_duration,
+            most_viewed_created_at
+        from top_games
+    ";
+        $topGamesQuery = $this->connection->query($sqlQuery);
+        return $topGamesQuery->fetchAll(PDO::FETCH_ASSOC);
     }
 }

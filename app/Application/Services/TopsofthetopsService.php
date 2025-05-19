@@ -2,17 +2,18 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\TopGamesRepositoryInterface;
+use App\Infrastructure\Database\DatabaseConnection;
+use App\Infrastructure\Repositories\TopGamesRepository;
 use DateTime;
 use PDO;
 
 class TopsofthetopsService
 {
-    private ?PDO $connection;
-    private DatabaseConnection $dbConnection;
-    public function __construct(DatabaseConnection $dbConnection)
+    private TopGamesRepositoryInterface $topGamesRepository;
+    public function __construct(TopGamesRepositoryInterface $topGamesRepository)
     {
-        $this->dbConnection = $dbConnection;
-        $this->connection = $this->dbConnection->connect();
+        $this->topGamesRepository = $topGamesRepository;
     }
 
     /**
@@ -20,8 +21,7 @@ class TopsofthetopsService
      */
     public function getTopsofthetops(string $accessToken, string $clientId, int $since): array
     {
-        $checkQuery = $this->connection->query("SELECT updated_at from top_games");
-        $row = $checkQuery->fetch();
+        $row = $this->topGamesRepository->getUpdatedAt();
         if (!$row) {
             return $this->respondWithTwitchAPIData($accessToken, $clientId);
         }
@@ -32,28 +32,7 @@ class TopsofthetopsService
         if ($lastUpdated > $since) { //php convierte el $since a un int al compararlo con un entero
             return $this->respondWithTwitchAPIData($accessToken, $clientId);
         }
-        return $this->respondWithDatabaseData($this->connection);
-    }
-
-    private function respondWithDatabaseData(?PDO $con): array
-    {
-        $sqlQuery = "
-        SELECT
-            game_id,
-            game_name,
-            user_name,
-            total_videos,
-            total_views,
-            most_viewed_title,
-            most_viewed_views,
-            most_viewed_duration,
-            most_viewed_created_at
-        from top_games
-    ";
-        $topGamesQuery = $con->query($sqlQuery);
-        $result = $topGamesQuery->fetchAll(PDO::FETCH_ASSOC);
-        http_response_code(200);
-        return $result;
+        return $this->topGamesRepository->getTopGames();
     }
 
     private function respondWithTwitchAPIData(string $accessToken, string $clientId): array
@@ -119,7 +98,7 @@ class TopsofthetopsService
                 "most_viewed_created_at" => $topVideo[0]["created_at"]
             ];
         }
-        $topGamesUpdater = new TopGamesUpdater(new DatabaseConnection());
+        $topGamesUpdater = new TopGamesRepository(new DatabaseConnection());
         $topGamesUpdater->update($result);
         return [$result, 200];
     }

@@ -2,14 +2,15 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Infrastructure\Repositories\UserRepository;
 use Throwable;
 
 class UserService
 {
-    private UserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

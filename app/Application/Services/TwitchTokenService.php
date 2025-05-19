@@ -2,6 +2,8 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\TwitchTokenRepositoryInterface;
+use App\Infrastructure\Database\DatabaseConnection;
 use App\Infrastructure\Repositories\TwitchTokenRepository;
 use DateTime;
 use Illuminate\Http\Request;
@@ -9,15 +11,11 @@ use Throwable;
 
 class TwitchTokenService
 {
-    private ?\PDO $connection;
-    private DatabaseConnection $dbConnection;
-    private TwitchTokenRepository $twitchTokenRepo;
+    private TwitchTokenRepositoryInterface $twitchTokenRepo;
 
-    public function __construct(DatabaseConnection $dbConnection)
+    public function __construct(TwitchTokenRepositoryInterface $twitchTokenRepo)
     {
-        $this->dbConnection = $dbConnection;
-        $this->connection = $this->dbConnection->connect();
-        $this->twitchTokenRepo = new TwitchTokenRepository($this->connection);
+        $this->twitchTokenRepo = $twitchTokenRepo;
     }
 
     public function getToken(string $clientId, string $clientSecret): ?string

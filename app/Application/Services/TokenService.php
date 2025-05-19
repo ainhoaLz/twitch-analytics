@@ -2,28 +2,26 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\UserRepositoryInterface;
 use App\Helpers\ResponseHelper;
-use App\Infrastructure\Repositories\TokenRepository;
-use PDO;
+use App\Domain\Interfaces\TokenRepositoryInterface;
 use Throwable;
 
 class TokenService
 {
-    private ?PDO $connection;
-    private DatabaseConnection $dbConnection;
-    private TokenRepository $tokenRepository;
+    private TokenRepositoryInterface $tokenRepository;
+    private UserRepositoryInterface $userRepository;
 
-    public function __construct(DatabaseConnection $dbConnection)
+    public function __construct(TokenRepositoryInterface $tokenRepository, UserRepositoryInterface $userRepository)
     {
-        $this->dbConnection = $dbConnection;
-        $this->connection = $this->dbConnection->connect();
-        $this->tokenRepository = new TokenRepository($this->connection);
+        $this->userRepository = $userRepository;
+        $this->tokenRepository = $tokenRepository;
     }
 
     public function generateToken(array|null $data): array
     {
         try {
-            $userId = $this->getUserId($data["email"], $data["api_key"]);
+            $userId = $this->userRepository->getUserId($data["email"], $data["api_key"]);
             if (empty($userId)) {
                 return respondWithError(401, "Unauthorized. API access token is invalid.");
             }
@@ -44,12 +42,5 @@ class TokenService
             http_response_code(500);
             return respondWithError(500, "Internal server error.");
         }
-    }
-
-    private function getUserId(string $email, string $apiKey): ?int
-    {
-        $stmt = $this->connection->prepare("SELECT id FROM users WHERE email = ? AND api_key = ?");
-        $stmt->execute([$email, $apiKey]);
-        return $stmt->fetchColumn() ?: null;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Controllers\Register;
 
-use App\Application\Services\DatabaseConnection;
 use App\Application\Services\UserService;
 use App\Controllers\Controller;
 use App\Controllers\ValidationException;
+use App\Infrastructure\Database\DatabaseConnection;
 use App\Infrastructure\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,20 +13,18 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class RegisterController extends BaseController
 {
-    private Controller $controller;
     private RegisterValidator $validator;
-    public function __construct()
+    private UserService $userService;
+    public function __construct(UserService $userService)
     {
-        $this->controller = new Controller();
         $this->validator = new RegisterValidator();
+        $this->userService = $userService;
     }
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            $userRepository = new UserRepository(new DatabaseConnection());
-            $userService = new UserService($userRepository);
             $userEmail = $this->validator->validate($request->input('email'));
-            $response = $userService->register($userEmail);
+            $response = $this->userService->register($userEmail);
             $httpCode = $response['httpCode'] ?? 200;
             unset($response['httpCode']);
             return response()->json($response, $httpCode);

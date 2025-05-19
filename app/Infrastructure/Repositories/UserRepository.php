@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Repositories;
 
-use App\Application\Services\DatabaseConnection;
 use App\Domain\Interfaces\UserRepositoryInterface;
+use App\Infrastructure\Database\DatabaseConnection;
 use Exception;
 use PDO;
 
@@ -51,5 +51,12 @@ class UserRepository implements UserRepositoryInterface
     {
         $stmt = $this->connection->query("SELECT COALESCE(MAX(id), 0) + 1 AS new_id FROM users");
         return (int) $stmt->fetchColumn();
+    }
+
+    public function getUserId(string $email, string $apiKey): ?int
+    {
+        $stmt = $this->connection->prepare("SELECT id FROM users WHERE email = ? AND api_key = ?");
+        $stmt->execute([$email, $apiKey]);
+        return $stmt->fetchColumn() ?: null;
     }
 }

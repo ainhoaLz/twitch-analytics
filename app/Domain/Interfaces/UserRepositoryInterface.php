@@ -11,4 +11,6 @@ interface UserRepositoryInterface
     public function insertNewUser(string $email, string $apiKey, int $userId, string $createdAt): void;
 
     public function getNextUserId(): int;
+
+    public function getUserId(string $email, string $apiKey): ?int;
 }
