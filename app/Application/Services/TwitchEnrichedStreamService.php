@@ -2,6 +2,9 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
 
@@ -121,16 +124,13 @@ class TwitchEnrichedStreamService
             http_response_code(200);
             return $response[1];
         }
-        if ($response[0] == 400) {
-            return respondWithError(400, "Invalid 'limit' parameter.");
-        }
         if ($response[0] == 401) {
-            return respondWithError(401, "Unauthorized. Twitch access token is invalid or has expired.");
+            throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
         }
         if ($response[0] == 500) {
-            return respondWithError(500, "Internal server error.");
+            throw new ServerException("Internal server error.");
         }
-        return respondWithError($response[0], "Unknown error.");
+        throw new UnknownException("Unknown error.", $response[0]);
     }
 
     private function ordenar($var1, $var2)

@@ -2,20 +2,27 @@
 
 namespace Tests\Integration\Controllers;
 
+use App\Application\Services\TokenService;
 use App\Controllers\Token\TokenController;
 use Exception;
 use Illuminate\Http\Request;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 
 class TokenControllerTest extends TestCase
 {
     private TokenController $controller;
+    private TokenService $tokenService;
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->controller = new TokenController();
+        $this->tokenService = $this->createMock(TokenService::class);
+        $this->controller = new TokenController($this->tokenService);
     }
 
     /**

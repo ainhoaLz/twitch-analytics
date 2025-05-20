@@ -245,7 +245,7 @@ require_once __DIR__ . '/../app/Domain/Interfaces/Database/TwitchTokenRepository
 require_once __DIR__ . '/../app/Application/Services/TokenService.php';
 require_once __DIR__ . '/../app/Domain/Interfaces/Database/TokenRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TopsofthetopsService.php';
-require_once __DIR__ . '/../app/Application/Services/UserService.php';
+require_once __DIR__ . '/../app/Application/Services/RegisterService.php';
 require_once __DIR__ . '/../app/Domain/Interfaces/Database/UserRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchUserService.php';
 require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';

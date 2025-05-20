@@ -6,6 +6,9 @@ use App\Application\Services\TwitchEnrichedStreamService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\ValidationException;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -38,6 +41,12 @@ class GetEnrichedStreamsController
             return response()->json($response, $httpCode);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        } catch (ServerException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        } catch (UnknownException $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
         }
     }
 }

@@ -2,21 +2,32 @@
 
 namespace Tests\Integration\Controllers;
 
+use App\Application\Services\TwitchEnrichedStreamService;
+use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\GetEnrichedStreams\GetEnrichedStreamsController;
 use Illuminate\Http\Request;
+use Mockery;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 class GetEnrichedStreamsControllerTest extends TestCase
 {
     private GetEnrichedStreamsController $controller;
+    private TwitchEnrichedStreamService $streamService;
+    private TwitchTokenService $tokenService;
 
+    /**
+     * @throws Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
+        $this->streamService = $this->createMock(TwitchEnrichedStreamService::class);
+        $this->tokenService = $this->createMock(TwitchTokenService::class);
 
-        $this->controller = new GetEnrichedStreamsController();
+        $this->controller = new GetEnrichedStreamsController($this->streamService, $this->tokenService);
 
         $mockController = $this->createMock(Controller::class);
         $mockController->method('validateToken')

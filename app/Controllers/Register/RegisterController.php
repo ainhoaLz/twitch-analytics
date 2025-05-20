@@ -2,8 +2,9 @@
 
 namespace App\Controllers\Register;
 
-use App\Application\Services\UserService;
+use App\Application\Services\RegisterService;
 use App\Controllers\ValidationException;
+use App\Domain\Exceptions\ServerException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -11,8 +12,8 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class RegisterController extends BaseController
 {
     private RegisterValidator $validator;
-    private UserService $userService;
-    public function __construct(UserService $userService)
+    private RegisterService $userService;
+    public function __construct(RegisterService $userService)
     {
         $this->validator = new RegisterValidator();
         $this->userService = $userService;
@@ -27,6 +28,8 @@ class RegisterController extends BaseController
             return response()->json($response, $httpCode);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
+        } catch (ServerException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
 }

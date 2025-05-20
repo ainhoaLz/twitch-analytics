@@ -2,6 +2,7 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\ServerException;
 use App\Domain\Interfaces\Database\TokenRepositoryInterface;
 use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use App\Helpers\ResponseHelper;
@@ -36,11 +37,9 @@ class TokenService
 
             $this->tokenRepository->insertNewToken($tokenId, $userId, $token);
 
-            http_response_code(200);
             return ["token" => $token];
         } catch (Throwable $e) {
-            http_response_code(500);
-            return respondWithError(500, "Internal server error.");
+            throw new ServerException("Internal server error.");
         }
     }
 }

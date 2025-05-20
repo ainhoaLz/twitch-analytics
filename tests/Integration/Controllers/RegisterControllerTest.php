@@ -2,19 +2,28 @@
 
 namespace Tests\Integration\Controllers;
 
+use App\Application\Services\RegisterService;
+use App\Application\Services\TwitchUserService;
 use App\Controllers\Register\RegisterController;
 use Illuminate\Http\Request;
+use Mockery;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class RegisterControllerTest extends TestCase
 {
     private RegisterController $controller;
+    private RegisterService $service;
 
+    /**
+     * @throws Exception
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->controller = new RegisterController();
+        $this->service = $this->createMock(RegisterService::class);
+        $this->controller = new RegisterController($this->service);
     }
 
     /**

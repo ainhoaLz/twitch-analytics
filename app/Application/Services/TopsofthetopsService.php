@@ -2,6 +2,9 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\NotFoundException;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\Database\TopGamesRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TopsofthetopsRepositoryInterface;
 use App\Infrastructure\DatabaseConnection;
@@ -43,20 +46,17 @@ class TopsofthetopsService
     {
         $twitchResponse = $this->callTwitchAPI();
         $httpCode = $twitchResponse[1];
+        if (empty($twitchResponse[0])) {
+            throw new NotFoundException("Not Found. No data available.");
+        }
         if ($httpCode == 200) {
             http_response_code(200);
             return $twitchResponse[0];
         }
-        if ($httpCode == 400) {
-            return respondWithError(400, "Bad Request. Invalid or missing parameters.");
-        }
-        if ($httpCode == 404) {
-            return respondWithError(404, "Not Found. No data available.");
-        }
         if ($httpCode == 500) {
-            return respondWithError(500, "Internal server error.");
+            throw new ServerException("Internal server error.");
         }
-        return respondWithError($httpCode, "Error: $httpCode");
+        throw new UnknownException("Unknown error.", $httpCode);
     }
 
     private function callTwitchAPI(): array

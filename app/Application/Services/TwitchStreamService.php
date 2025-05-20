@@ -2,6 +2,9 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
 use Exception;
 
@@ -42,16 +45,13 @@ class TwitchStreamService
         }
 
         if ($httpCode === 401) {
-            http_response_code(401);
-            return ["error" => "Unauthorized. Twitch access token is invalid or has expired."];
+            throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
         }
 
         if ($httpCode === 500) {
-            http_response_code(500);
-            return ["error" => "Internal server error."];
+            throw new ServerException("Internal server error.");
         }
 
-        http_response_code($httpCode);
-        return ["error" => "Unknown error."];
+        throw new UnknownException("Unknown error.", $httpCode);
     }
 }
