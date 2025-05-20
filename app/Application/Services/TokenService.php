@@ -3,6 +3,7 @@
 namespace App\Application\Services;
 
 use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Interfaces\Database\TokenRepositoryInterface;
 use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use App\Helpers\ResponseHelper;
@@ -24,7 +25,7 @@ class TokenService
         try {
             $userId = $this->userRepository->getUserId($data["email"], $data["api_key"]);
             if (empty($userId)) {
-                return respondWithError(401, "Unauthorized. API access token is invalid.");
+                throw new UnauthorizedException("Unauthorized. API access token is invalid.");
             }
 
             $token = bin2hex(random_bytes(32));

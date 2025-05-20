@@ -5,6 +5,7 @@ namespace App\Controllers\Token;
 use App\Application\Services\TokenService;
 use App\Controllers\ValidationException;
 use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -35,6 +36,8 @@ class TokenController extends BaseController
             return response()->json(['error' => $exception->getMessage()], 400);
         } catch (ServerException $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
         }
     }
 }
