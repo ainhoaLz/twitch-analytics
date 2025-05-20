@@ -2,27 +2,28 @@
 
 namespace App\Controllers\GetStreams;
 
-use App\Application\Services\DatabaseConnection;
 use App\Application\Services\TwitchStreamService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class GetStreamsController extends BaseController
 {
-    private string $accessToken;
-    private string $clientId;
     private Controller $controller;
+    private TwitchTokenService $tokenService;
+    private TwitchStreamService $twitchStreamService;
 
-    public function __construct()
+    public function __construct(TwitchTokenService $tokenService, TwitchStreamService $twitchStreamService)
     {
-        $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-        $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
-        $twitchService = new TwitchTokenService(new DatabaseConnection());
-        $this->accessToken = $twitchService->getToken($this->clientId, $clientSecret);
-        $this->controller = new Controller();
+        $this->tokenService = $tokenService;
+        $this->controller = new Controller($this->tokenService);
+        $this->twitchStreamService = $twitchStreamService;
     }
 
 
@@ -35,11 +36,17 @@ class GetStreamsController extends BaseController
         if ($tokenValidation != 200) {
             return response()->json($tokenValidation, 401);
         }
-
-        $twitchStreamService = new TwitchStreamService();
-        $response = $twitchStreamService->getStreams($this->accessToken, $this->clientId);
-        $httpCode = $response['httpCode'] ?? 200;
-        unset($response['httpCode']);
-        return response()->json($response, $httpCode);
+        try {
+            $response = $this->twitchStreamService->getStreams();
+            $httpCode = $response['httpCode'] ?? 200;
+            unset($response['httpCode']);
+            return response()->json($response, $httpCode);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        } catch (ServerException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        } catch (UnknownException $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
+        }
     }
 }

@@ -2,28 +2,28 @@
 
 namespace App\Controllers\GetEnrichedStreams;
 
-use App\Application\Services\DatabaseConnection;
 use App\Application\Services\TwitchEnrichedStreamService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\ValidationException;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GetEnrichedStreamsController
 {
-    private string $accessToken;
-    private string $clientId;
     private Controller $controller;
     private GetEnrichedStreamsValidator $limitValidator;
+    private TwitchEnrichedStreamService $enrichedService;
+    private TwitchTokenService $twitchService;
 
-    public function __construct()
+    public function __construct(TwitchEnrichedStreamService $enrichedService, TwitchTokenService $twitchService)
     {
-        $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-        $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
-        $twitchService = new TwitchTokenService(new DatabaseConnection());
-        $this->accessToken = $twitchService->getToken($this->clientId, $clientSecret);
-        $this->controller = new Controller();
+        $this->enrichedService = $enrichedService;
+        $this->twitchService = $twitchService;
+        $this->controller = new Controller($this->twitchService);
         $this->limitValidator = new GetEnrichedStreamsValidator();
     }
 
@@ -35,13 +35,18 @@ class GetEnrichedStreamsController
         }
         try {
             $limitValue = $this->limitValidator->validate($request->input('limit'));
-            $enrichedService = new TwitchEnrichedStreamService();
-            $response = $enrichedService->getEnrichedStreams($this->accessToken, $this->clientId, $limitValue);
+            $response = $this->enrichedService->getEnrichedStreams($limitValue);
             $httpCode = $response['httpCode'] ?? 200;
             unset($response['httpCode']);
             return response()->json($response, $httpCode);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        } catch (ServerException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        } catch (UnknownException $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
         }
     }
 }

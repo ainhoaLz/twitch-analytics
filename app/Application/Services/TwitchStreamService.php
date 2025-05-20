@@ -2,38 +2,34 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
+use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
 use Exception;
 
 class TwitchStreamService
 {
+    private TwitchStreamRepositoryInterface $streamRepository;
+
+    public function __construct(TwitchStreamRepositoryInterface $streamRepository)
+    {
+        $this->streamRepository = $streamRepository;
+    }
+
     /**
-     * @param string $accessToken
-     * @param string $clientId
      * @return array
      * @throws Exception
      */
-    public function getStreams(string $accessToken, string $clientId): array
+    public function getStreams(): array
     {
-        $url = "https://api.twitch.tv/helix/streams";
-        $curlh = curl_init($url);
-        $headers = [
-            "Authorization: Bearer $accessToken",
-            "Client-Id: $clientId",
-            "Content-Type: application/json"
-        ];
-        curl_setopt($curlh, CURLOPT_HTTPGET, true);
-        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-
-        $response = curl_exec($curlh);
-        $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
-        curl_close($curlh);
+        $apiResponse = $this->streamRepository->getStreamsFromTwitch();
+        $httpCode = $apiResponse['httpCode'];
+        $streams = $apiResponse['streams'];
 
         if ($httpCode === 200) {
             http_response_code(200);
-            $data = json_decode($response, true);
+            $data = json_decode($streams, true);
             if (isset($data["data"])) {
                 $resp = [];
                 foreach ($data["data"] as $stream) {
@@ -49,16 +45,13 @@ class TwitchStreamService
         }
 
         if ($httpCode === 401) {
-            http_response_code(401);
-            return ["error" => "Unauthorized. Twitch access token is invalid or has expired."];
+            throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
         }
 
         if ($httpCode === 500) {
-            http_response_code(500);
-            return ["error" => "Internal server error."];
+            throw new ServerException("Internal server error.");
         }
 
-        http_response_code($httpCode);
-        return ["error" => "Unknown error."];
+        throw new UnknownException("Unknown error.", $httpCode);
     }
 }

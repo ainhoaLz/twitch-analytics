@@ -2,14 +2,15 @@
 
 namespace App\Application\Services;
 
-use App\Infrastructure\Repositories\UserRepository;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use Throwable;
 
-class UserService
+class RegisterService
 {
-    private UserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -30,7 +31,7 @@ class UserService
 
             return $this->respondWithApiKey($apiKey);
         } catch (Throwable $e) {
-            return respondWithError(500, "Internal server error.");
+            throw new ServerException("Internal server error.");
         }
     }
 

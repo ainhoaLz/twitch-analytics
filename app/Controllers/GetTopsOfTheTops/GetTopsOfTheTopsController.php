@@ -2,29 +2,30 @@
 
 namespace App\Controllers\GetTopsOfTheTops;
 
-use App\Application\Services\DatabaseConnection;
 use App\Application\Services\TopsofthetopsService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\ValidationException;
+use App\Domain\Exceptions\NotFoundException;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnknownException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GetTopsOfTheTopsController
 {
-    private string $accessToken;
-    private string $clientId;
     private Controller $controller;
     private GetTopsOfTheTopsValidator $validator;
+    private TwitchTokenService $tokenService;
+    private TopsofthetopsService $topsofthetopsService;
 
-    public function __construct()
+
+    public function __construct(TwitchTokenService $tokenService, TopsofthetopsService $topsofthetopsService)
     {
-        $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-        $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
-        $twitchService = new TwitchTokenService(new DatabaseConnection());
-        $this->accessToken = $twitchService->getToken($this->clientId, $clientSecret);
-        $this->controller = new Controller();
+        $this->tokenService = $tokenService;
+        $this->controller = new Controller($this->tokenService);
         $this->validator = new GetTopsOfTheTopsValidator();
+        $this->topsofthetopsService = $topsofthetopsService;
     }
 
     /**
@@ -37,14 +38,19 @@ class GetTopsOfTheTopsController
             return response()->json($tokenValidation, 401);
         }
         try {
-            $service = new TopsofthetopsService(new DatabaseConnection());
             $sinceValue = $this->validator->validate($request->input('since', '600'));
-            $response = $service->getTopsofthetops($this->accessToken, $this->clientId, $sinceValue);
+            $response = $this->topsofthetopsService->getTopsofthetops($sinceValue);
             $httpCode = $response['httpCode'] ?? 200;
             unset($response['httpCode']);
             return response()->json($response, $httpCode);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
+        } catch (NotFoundException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        } catch (ServerException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 500);
+        } catch (UnknownException $exception) {
+            return response()->json(['error' => $exception->getMessage()], $exception->getCode());
         }
     }
 }

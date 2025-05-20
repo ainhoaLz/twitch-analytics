@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
-class ValidationException extends \RuntimeException
+use App\Domain\Exceptions\ApplicationException;
+
+class ValidationException extends ApplicationException
 {
     public function __construct(string $message)
     {
