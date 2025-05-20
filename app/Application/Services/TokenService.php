@@ -2,9 +2,9 @@
 
 namespace App\Application\Services;
 
-use App\Domain\Interfaces\UserRepositoryInterface;
+use App\Domain\Interfaces\Database\TokenRepositoryInterface;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use App\Helpers\ResponseHelper;
-use App\Domain\Interfaces\TokenRepositoryInterface;
 use Throwable;
 
 class TokenService

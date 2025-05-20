@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Infrastructure\Repositories\Database;
 
-use App\Domain\Interfaces\TokenRepositoryInterface;
+use App\Domain\Interfaces\Database\TokenRepositoryInterface;
 use PDO;
 
 class TokenRepository implements TokenRepositoryInterface

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Infrastructure\Repositories\Database;
 
-use App\Domain\Interfaces\UserRepositoryInterface;
-use App\Infrastructure\Database\DatabaseConnection;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
+use App\Infrastructure\DatabaseConnection;
 use Exception;
 use PDO;
 

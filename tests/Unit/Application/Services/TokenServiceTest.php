@@ -3,9 +3,8 @@
 namespace Tests\Unit\Application\Services;
 
 use App\Application\Services\TokenService;
-use App\Domain\Interfaces\TokenRepositoryInterface;
-use App\Domain\Interfaces\UserRepositoryInterface;
-use Mockery;
+use App\Domain\Interfaces\Database\TokenRepositoryInterface;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 class TokenServiceTest extends TestCase
@@ -16,13 +15,13 @@ class TokenServiceTest extends TestCase
 
     protected function setUp(): void
     {
-//        parent::setUp();
-//        $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
-//        $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
-//        $this->tokenService = new TokenService(
-//            $this->userRepository,
-//            $this->tokenRepository
-//        );
+        //        parent::setUp();
+        //        $this->userRepository = Mockery::mock(UserRepositoryInterface::class);
+        //        $this->tokenRepository = Mockery::mock(TokenRepositoryInterface::class);
+        //        $this->tokenService = new TokenService(
+        //            $this->userRepository,
+        //            $this->tokenRepository
+        //        );
     }
 
     /**

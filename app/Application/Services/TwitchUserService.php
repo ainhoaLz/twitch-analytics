@@ -2,47 +2,29 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
 use Exception;
 
 class TwitchUserService
 {
     protected string $accessToken;
     protected string $clientId;
+    private TwichUserRepositoryInterface $userRepository;
 
-    public function __construct(string $accessToken, string $clientId)
+    public function __construct(TwichUserRepositoryInterface $userRepository)
     {
-        $this->accessToken = $accessToken;
-        $this->clientId = $clientId;
+        $this->userRepository = $userRepository;
     }
 
     /**
      * @throws Exception
      */
-    public function getUser(mixed $streamerId): array
+    public function getUserById(mixed $streamerId): array
     {
-        $url = "https://api.twitch.tv/helix/users?id=$streamerId";
-        $curlh = curl_init();
-        $headers = [
-            "Authorization: Bearer $this->accessToken",
-            "Client-Id: $this->clientId",
-            "Content-type: application/json"
-        ];
-        curl_setopt($curlh, CURLOPT_URL, $url);
-        curl_setopt($curlh, CURLOPT_HTTPGET, true);
-        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-        $apiResponse = curl_exec($curlh);
-        if (curl_errno($curlh)) {
-            echo json_encode(["error" => "Error en la solicitud curl: " . curl_error($curlh)]);
-            curl_close($curlh);
-            exit;
-        }
-
-        $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
-        curl_close($curlh);
-        http_response_code($httpCode);
+        $userInfo = $this->userRepository->getUser($streamerId);
+        $httpCode = $userInfo['httpCode'];
+        $apiResponse = $userInfo['user'];
         if ($httpCode == 200) {
             $data = json_decode($apiResponse, true);
             return $data['data'][0];

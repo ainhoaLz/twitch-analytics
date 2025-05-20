@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Application\Services\TwitchTokenService;
-use App\Infrastructure\Database\DatabaseConnection;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 

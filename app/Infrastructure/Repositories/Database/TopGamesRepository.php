@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Infrastructure\Repositories\Database;
 
-use App\Domain\Interfaces\TopGamesRepositoryInterface;
-use App\Infrastructure\Database\DatabaseConnection;
+use App\Domain\Interfaces\Database\TopGamesRepositoryInterface;
+use App\Infrastructure\DatabaseConnection;
 use PDO;
 use PDOException;
 

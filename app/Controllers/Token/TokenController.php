@@ -4,7 +4,6 @@ namespace App\Controllers\Token;
 
 use App\Application\Services\TokenService;
 use App\Controllers\ValidationException;
-use App\Infrastructure\Database\DatabaseConnection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;

@@ -3,10 +3,7 @@
 namespace App\Controllers\Register;
 
 use App\Application\Services\UserService;
-use App\Controllers\Controller;
 use App\Controllers\ValidationException;
-use App\Infrastructure\Database\DatabaseConnection;
-use App\Infrastructure\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;

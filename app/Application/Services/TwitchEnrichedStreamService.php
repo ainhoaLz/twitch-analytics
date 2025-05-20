@@ -2,47 +2,35 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
+
 class TwitchEnrichedStreamService
 {
-    public function getEnrichedStreams($accessToken, $clientId, $limit): array
+    private TwitchStreamRepositoryInterface $streamRepository;
+    private TwichUserRepositoryInterface $userRepository;
+    public function __construct(
+        TwitchStreamRepositoryInterface $streamRepository,
+        TwichUserRepositoryInterface $userRepository
+    ) {
+        $this->userRepository = $userRepository;
+        $this->streamRepository = $streamRepository;
+    }
+    public function getEnrichedStreams($limit): array
     {
-        $streams = $this->getStreams($accessToken, $clientId);
-        $resp = $this->addDataToResponse($streams, $limit, $clientId, $accessToken);
+        $streams = $this->getStreams();
+        $resp = $this->addDataToResponse($streams, $limit);
         return $this->fetchResponse($resp);
     }
 
-    private function getStreams($accessToken, $clientId): array
+    private function getStreams(): array
     {
-        $url = "https://api.twitch.tv/helix/streams";
-        $headers = [
-            "Authorization: Bearer $accessToken",
-            "Client-Id: $clientId",
-            "Content-type: application/json"
-        ];
-        $data = $this->getStreamsFromTwitch($url, $headers);
+        $data = $this->streamRepository->getStreamsFromTwitch();
 
         if ($data['httpCode'] == 200) {
-            return $this->processStreamData($data['response'], $data['httpCode']);
+            return $this->processStreamData($data['streams'], $data['httpCode']);
         }
         return [null, $data['httpCode']];
-    }
-
-    private function getStreamsFromTwitch($url, $headers): array
-    {
-        $curlh = curl_init($url);
-        curl_setopt($curlh, CURLOPT_HTTPGET, true);
-        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-        $response = curl_exec($curlh);
-        $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
-        curl_close($curlh);
-
-        return [
-            'response' => $response,
-            'httpCode' => $httpCode
-        ];
     }
 
     private function processStreamData($response, $httpCode): array
@@ -64,7 +52,7 @@ class TwitchEnrichedStreamService
         return [null, $httpCode];
     }
 
-    private function addDataToResponse($streams, $limit, $clientId, $accessToken)
+    private function addDataToResponse($streams, $limit)
     {
         if ($streams[1] != 200) {
             return $streams;
@@ -77,7 +65,7 @@ class TwitchEnrichedStreamService
 
         $limitedStreams = array_slice($streams[0], 0, $limit);
 
-        return $this->addUserInfo($limitedStreams, $accessToken, $clientId);
+        return $this->addUserInfo($limitedStreams);
     }
 
     private function isLimitValid($limit, $count): bool
@@ -85,17 +73,11 @@ class TwitchEnrichedStreamService
         return ($limit <= $count);
     }
 
-    private function addUserInfo($stream, $accessToken, $clientId): array
+    private function addUserInfo($stream): array
     {
         $returnStream = $stream;
         $userIds = array_column($stream, "user_id");
-        $url = "https://api.twitch.tv/helix/users?id=" . implode('&id=', $userIds);
-        $headers = [
-            "Authorization: Bearer $accessToken",
-            "Client-Id: $clientId",
-            "Content-type: application/json"
-        ];
-        $data = $this->getUsersFromTwitch($url, $headers);
+        $data = $this->userRepository->getMultipleUsers($userIds);
 
         if ($data['httpCode'] != 200) {
             return [$data['httpCode'], null];
@@ -104,25 +86,6 @@ class TwitchEnrichedStreamService
         $this->addUserToStreams($returnStream, $users);
 
         return [$data['httpCode'], $returnStream];
-    }
-
-    private function getUsersFromTwitch($url, $headers): array
-    {
-        $curlh = curl_init();
-        curl_setopt($curlh, CURLOPT_URL, $url);
-        curl_setopt($curlh, CURLOPT_HTTPGET, true);
-        curl_setopt($curlh, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlh, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curlh, CURLOPT_SSL_VERIFYHOST, false);
-        $response = curl_exec($curlh);
-        $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
-        curl_close($curlh);
-
-        return [
-            'response' => $response,
-            'httpCode' => $httpCode
-        ];
     }
 
     private function fetchUserData($response): ?array

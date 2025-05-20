@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Infrastructure\Repositories;
+namespace App\Infrastructure\Repositories\Database;
 
-use App\Domain\Interfaces\TwitchTokenRepositoryInterface;
+use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
 use PDO;
 
 class TwitchTokenRepository implements TwitchTokenRepositoryInterface

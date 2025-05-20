@@ -49,47 +49,120 @@ $app->singleton(
 );
 
 $app->singleton(
-    App\Domain\Interfaces\TokenRepositoryInterface::class,
+    \App\Domain\Interfaces\Database\TokenRepositoryInterface::class,
     function () {
-        return new App\Infrastructure\Repositories\TokenRepository(
-            \App\Infrastructure\Database\DatabaseConnection::connect()
+        return new \App\Infrastructure\Repositories\Database\TokenRepository(
+            \App\Infrastructure\DatabaseConnection::connect()
         );
     }
 );
 
 $app->singleton(
-    App\Domain\Interfaces\TwitchTokenRepositoryInterface::class,
+    \App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface::class,
     function ($app) {
-        return new App\Infrastructure\Repositories\TwitchTokenRepository(
-            \App\Infrastructure\Database\DatabaseConnection::connect()
+        return new \App\Infrastructure\Repositories\Database\TwitchTokenRepository(
+            \App\Infrastructure\DatabaseConnection::connect()
         );
     }
 );
 
 $app->singleton(
-    \App\Infrastructure\Database\DatabaseConnection::class,
+    \App\Infrastructure\DatabaseConnection::class,
     function () {
-        return new \App\Infrastructure\Database\DatabaseConnection();
+        return new \App\Infrastructure\DatabaseConnection();
     }
 );
 
 $app->singleton(
-    App\Domain\Interfaces\UserRepositoryInterface::class,
+    \App\Domain\Interfaces\Database\UserRepositoryInterface::class,
     function ($app) {
-        return new App\Infrastructure\Repositories\UserRepository(
-            $app->make(\App\Infrastructure\Database\DatabaseConnection::class)
+        return new \App\Infrastructure\Repositories\Database\UserRepository(
+            $app->make(\App\Infrastructure\DatabaseConnection::class)
         );
     }
 );
 
 $app->singleton(
-    App\Domain\Interfaces\TopGamesRepositoryInterface::class,
+    \App\Domain\Interfaces\Database\TopGamesRepositoryInterface::class,
     function ($app) {
-        return new App\Infrastructure\Repositories\TopGamesRepository(
-            $app->make(\App\Infrastructure\Database\DatabaseConnection::class)
+        return new \App\Infrastructure\Repositories\Database\TopGamesRepository(
+            $app->make(\App\Infrastructure\DatabaseConnection::class)
         );
     }
 );
+
+$app->singleton(
+    \App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class,
+    function ($app) {
+        return new \App\Infrastructure\Repositories\TwitchAPI\TwitchTokenRepository(
+            $app->make(\App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface::class)
+        );
+    }
+);
+
+
+$app->singleton(
+    \App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface::class,
+    function ($app) {
+        $clientId = getenv('TWITCH_CLIENT_ID');
+        $clientSecret = getenv('TWITCH_CLIENT_SECRET');
+
+        $tokenService = new \App\Application\Services\TwitchTokenService(
+            $app->make(\App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface::class),
+            $app->make(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class)
+        );
+
+        $accessToken = $tokenService->getToken($clientId, $clientSecret);
+
+        return new \App\Infrastructure\Repositories\TwitchAPI\TwitchUserRepository(
+            $accessToken,
+            $clientId
+        );
+    }
+);
+
+$app->singleton(
+    \App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface::class,
+    function ($app) {
+        $clientId = getenv('TWITCH_CLIENT_ID');
+        $clientSecret = getenv('TWITCH_CLIENT_SECRET');
+
+        $tokenService = new \App\Application\Services\TwitchTokenService(
+            $app->make(\App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface::class),
+            $app->make(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class)
+        );
+
+        $accessToken = $tokenService->getToken($clientId, $clientSecret);
+
+        return new \App\Infrastructure\Repositories\TwitchAPI\TwitchStreamRepository(
+            $accessToken,
+            $clientId
+        );
+    }
+);
+
+$app->singleton(
+    \App\Domain\Interfaces\TwitchAPI\TopsofthetopsRepositoryInterface::class,
+    function ($app) {
+        $clientId = getenv('TWITCH_CLIENT_ID');
+        $clientSecret = getenv('TWITCH_CLIENT_SECRET');
+
+        $tokenService = new \App\Application\Services\TwitchTokenService(
+            $app->make(\App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface::class),
+            $app->make(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class)
+        );
+
+        $accessToken = $tokenService->getToken($clientId, $clientSecret);
+
+        return new \App\Infrastructure\Repositories\TwitchAPI\TopsofthetopsRepository(
+            $accessToken,
+            $clientId
+        );
+    }
+);
+
+
+
 
 
 
@@ -164,18 +237,18 @@ $app->router->group([
  * esto es temporal, es para ver que funciona de momento sin tener que organizar bien todos los archivos
  */
 
-require_once __DIR__ . '/../app/Domain/Interfaces/TopGamesRepositoryInterface.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/Database/TopGamesRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchEnrichedStreamService.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchStreamService.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchTokenService.php';
-require_once __DIR__ . '/../app/Domain/Interfaces/TwitchTokenRepositoryInterface.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/Database/TwitchTokenRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TokenService.php';
-require_once __DIR__ . '/../app/Domain/Interfaces/TokenRepositoryInterface.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/Database/TokenRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TopsofthetopsService.php';
 require_once __DIR__ . '/../app/Application/Services/UserService.php';
-require_once __DIR__ . '/../app/Domain/Interfaces/UserRepositoryInterface.php';
+require_once __DIR__ . '/../app/Domain/Interfaces/Database/UserRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchUserService.php';
 require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';
-require_once __DIR__ . '/../app/Infrastructure/Database/DatabaseConnection.php';
+require_once __DIR__ . '/../app/Infrastructure/DatabaseConnection.php';
 
 return $app;

@@ -2,8 +2,7 @@
 
 namespace App\Application\Services;
 
-use App\Domain\Interfaces\UserRepositoryInterface;
-use App\Infrastructure\Repositories\UserRepository;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use Throwable;
 
 class UserService

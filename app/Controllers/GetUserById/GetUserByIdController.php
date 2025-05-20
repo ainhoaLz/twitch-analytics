@@ -4,29 +4,26 @@ namespace App\Controllers\GetUserById;
 
 use App\Application\Services\TwitchTokenService;
 use App\Application\Services\TwitchUserService;
+use App\Application\Services\UserService;
 use App\Controllers\Controller;
 use App\Controllers\ValidationException;
-use App\Infrastructure\Database\DatabaseConnection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class GetUserByIdController extends BaseController
 {
-    private string $accessToken;
-    private string $clientId;
     private Controller $controller;
     private GetUserByIdValidator $userIdValidator;
+    private TwitchUserService $userService;
     private TwitchTokenService $tokenService;
 
-    public function __construct(TwitchTokenService $tokenService)
+    public function __construct(TwitchUserService $userService, TwitchTokenService $tokenService)
     {
-        $this->clientId = "myqofuuwfbtja3s178j5x7osa78xfh";
-        $clientSecret = "wp871wusg2nboymbedhwkd9oxkllgu";
         $this->tokenService = $tokenService;
-        $this->accessToken = $this->tokenService->getToken($this->clientId, $clientSecret);
         $this->controller = new Controller($this->tokenService);
         $this->userIdValidator = new GetUserByIdValidator();
+        $this->userService = $userService;
     }
 
     /**
@@ -40,8 +37,7 @@ class GetUserByIdController extends BaseController
         }
         try {
             $twitchUserId = $this->userIdValidator->validate($request->input('id'));
-            $twitchService = new TwitchUserService($this->accessToken, $this->clientId);
-            $response = $twitchService->getUser($twitchUserId);
+            $response = $this->userService->getUserById($twitchUserId);
             $httpCode = $response['httpCode'] ?? 200;
             unset($response['httpCode']);
             return response()->json($response, $httpCode);
