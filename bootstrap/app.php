@@ -248,7 +248,6 @@ require_once __DIR__ . '/../app/Application/Services/TopsofthetopsService.php';
 require_once __DIR__ . '/../app/Application/Services/RegisterService.php';
 require_once __DIR__ . '/../app/Domain/Interfaces/Database/UserRepositoryInterface.php';
 require_once __DIR__ . '/../app/Application/Services/TwitchUserService.php';
-require_once __DIR__ . '/../app/Helpers/ResponseHelper.php';
 require_once __DIR__ . '/../app/Infrastructure/DatabaseConnection.php';
 
 return $app;
