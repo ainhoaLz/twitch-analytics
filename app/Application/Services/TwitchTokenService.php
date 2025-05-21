@@ -42,13 +42,14 @@ class TwitchTokenService
 
     public function isTokenValid(Request $request): bool
     {
-        //        $headers = $request->headers->all(); no funciona ahora mismo
-        $headers = getAllHeaders();
-        if (!isset($headers['Authorization'])) {
+        $authHeader = $request->header('Authorization');
+
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
             return false;
         }
-        $authHeader = $headers['Authorization'];
-        $token = str_replace('Bearer ', '', $authHeader);
+
+        $token = substr($authHeader, 7);
         return $this->dbRepository->isTokenValidInDB($token);
     }
+
 }
