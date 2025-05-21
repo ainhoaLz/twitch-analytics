@@ -8,7 +8,9 @@ use App\Controllers\Controller;
 use App\Controllers\GetUserById\GetUserByIdController;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass; // Add missing import
+use ReflectionClass;
+
+// Add missing import
 
 class GetUserByIdControllerTest extends TestCase
 {
