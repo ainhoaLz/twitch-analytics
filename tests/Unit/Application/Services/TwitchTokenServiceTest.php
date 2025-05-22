@@ -7,25 +7,24 @@ use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface as DatabaseTwi
 use App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface as ApiTwitchTokenRepositoryInterface;
 use DateTime;
 use Illuminate\Http\Request;
-use Mockery;
-use Mockery\MockInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TwitchTokenServiceTest extends TestCase
 {
     private TwitchTokenService $twitchTokenService;
-    private MockInterface $dbRepositoryMock;
-    private MockInterface $apiRepositoryMock;
+    private MockObject $dbRepositoryMock;
+    private MockObject $apiRepositoryMock;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->dbRepositoryMock = Mockery::mock(DatabaseTwitchTokenRepositoryInterface::class);
-        $this->apiRepositoryMock = Mockery::mock(ApiTwitchTokenRepositoryInterface::class);
+        $this->dbRepositoryMock = $this->createMock(DatabaseTwitchTokenRepositoryInterface::class);
+        $this->apiRepositoryMock = $this->createMock(ApiTwitchTokenRepositoryInterface::class);
         $this->twitchTokenService = new TwitchTokenService($this->dbRepositoryMock, $this->apiRepositoryMock);
     }
 
-    public function testGetTokenReturnsStoredToken()
+    public function testGetTokenReturnsStoredToken(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -35,19 +34,20 @@ class TwitchTokenServiceTest extends TestCase
         ];
 
         $this->dbRepositoryMock
-            ->shouldReceive('getStoredToken')
-            ->once()
-            ->andReturn($storedToken);
+            ->expects($this->once())
+            ->method('getStoredToken')
+            ->willReturn($storedToken);
 
         $this->apiRepositoryMock
-            ->shouldNotReceive('getNewToken');
+            ->expects($this->never())
+            ->method('getNewToken');
 
         $token = $this->twitchTokenService->getToken($clientId, $clientSecret);
 
         $this->assertEquals('valid_token', $token);
     }
 
-    public function testGetTokenFetchesNewTokenWhenExpired()
+    public function testGetTokenFetchesNewTokenWhenExpired(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -57,62 +57,58 @@ class TwitchTokenServiceTest extends TestCase
         ];
 
         $this->dbRepositoryMock
-            ->shouldReceive('getStoredToken')
-            ->once()
-            ->andReturn($storedToken);
+            ->expects($this->once())
+            ->method('getStoredToken')
+            ->willReturn($storedToken);
 
         $this->apiRepositoryMock
-            ->shouldReceive('getNewToken')
-            ->once()
+            ->expects($this->once())
+            ->method('getNewToken')
             ->with($clientId, $clientSecret)
-            ->andReturn('new_token');
+            ->willReturn('new_token');
 
         $token = $this->twitchTokenService->getToken($clientId, $clientSecret);
 
         $this->assertEquals('new_token', $token);
     }
 
-    public function testIsTokenValidReturnsTrueForValidToken()
+    public function testIsTokenValidReturnsTrueForValidToken(): void
     {
-        $request = Mockery::mock(Request::class);
+        $request = $this->createMock(Request::class);
 
-        $request->shouldReceive('header')
+        $request
+            ->expects($this->once())
+            ->method('header')
             ->with('Authorization')
-            ->once()
-            ->andReturn('Bearer valid_token');
+            ->willReturn('Bearer valid_token');
 
         $this->dbRepositoryMock
-            ->shouldReceive('isTokenValidInDB')
-            ->once()
+            ->expects($this->once())
+            ->method('isTokenValidInDB')
             ->with('valid_token')
-            ->andReturn(true);
+            ->willReturn(true);
 
         $isValid = $this->twitchTokenService->isTokenValid($request);
 
         $this->assertTrue($isValid);
     }
 
-    public function testIsTokenValidReturnsFalseForMissingAuthorizationHeader()
+    public function testIsTokenValidReturnsFalseForMissingAuthorizationHeader(): void
     {
-        $request = Mockery::mock(Request::class);
+        $request = $this->createMock(Request::class);
 
-        $request->shouldReceive('header')
+        $request
+            ->expects($this->once())
+            ->method('header')
             ->with('Authorization')
-            ->once()
-            ->andReturn(null);
+            ->willReturn(null);
 
         $this->dbRepositoryMock
-            ->shouldNotReceive('isTokenValidInDB');
+            ->expects($this->never())
+            ->method('isTokenValidInDB');
 
         $isValid = $this->twitchTokenService->isTokenValid($request);
 
         $this->assertFalse($isValid);
-    }
-
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

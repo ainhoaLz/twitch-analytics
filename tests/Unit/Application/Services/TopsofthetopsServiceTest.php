@@ -3,13 +3,17 @@
 namespace Tests\Unit\Application\Services;
 
 use App\Application\Services\TopsofthetopsService;
-use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\Database\TopGamesRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TopsofthetopsRepositoryInterface;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 class TopsofthetopsServiceTest extends TestCase
 {
+    /**
+     * @throws \DateMalformedStringException
+     * @throws Exception
+     */
     public function testGetTopsofthetopsReturnsValidResponse()
     {
         $mockedDbRepository = $this->createMock(TopGamesRepositoryInterface::class);

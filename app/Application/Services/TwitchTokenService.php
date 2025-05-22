@@ -51,5 +51,4 @@ class TwitchTokenService
         $token = substr($authHeader, 7);
         return $this->dbRepository->isTokenValidInDB($token);
     }
-
 }

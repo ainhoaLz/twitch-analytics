@@ -5,26 +5,25 @@ namespace Tests\Unit\Application\Services;
 use App\Application\Services\TwitchUserService;
 use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
-use Mockery;
-use Mockery\MockInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TwitchUserServiceTest extends TestCase
 {
     private TwitchUserService $twitchUserService;
-    private MockInterface $mockedRepository;
+    private MockObject $mockedRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mockedRepository = Mockery::mock(TwichUserRepositoryInterface::class);
+        $this->mockedRepository = $this->createMock(TwichUserRepositoryInterface::class);
         $this->twitchUserService = new TwitchUserService($this->mockedRepository);
     }
 
     /**
      * @test
      */
-    public function getUserByIdReturnsValidResponse()
+    public function getUserByIdReturnsValidResponse(): void
     {
         $userId = 12345678;
         $expectedResponse = [
@@ -41,9 +40,10 @@ class TwitchUserServiceTest extends TestCase
         ];
 
         $this->mockedRepository
-            ->shouldReceive('getUser')
+            ->expects($this->once())
+            ->method('getUser')
             ->with($userId)
-            ->andReturn($mockApiResponse);
+            ->willReturn($mockApiResponse);
 
         $response = $this->twitchUserService->getUserById($userId);
 
@@ -54,7 +54,7 @@ class TwitchUserServiceTest extends TestCase
      * @test
      * @throws \Exception
      */
-    public function getUserByIdThrowsNotFoundException()
+    public function getUserByIdThrowsNotFoundException(): void
     {
         $userId = 12345678;
 
@@ -64,19 +64,14 @@ class TwitchUserServiceTest extends TestCase
         ];
 
         $this->mockedRepository
-            ->shouldReceive('getUser')
+            ->expects($this->once())
+            ->method('getUser')
             ->with($userId)
-            ->andReturn($mockApiResponse);
+            ->willReturn($mockApiResponse);
 
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage("User not found.");
 
         $this->twitchUserService->getUserById($userId);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }
