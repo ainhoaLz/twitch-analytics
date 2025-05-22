@@ -4,8 +4,9 @@ namespace Tests\Unit\Application\Services;
 
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use \App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
-use \App\Application\Services\TwitchStreamService;
+use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
+use App\Application\Services\TwitchStreamService;
+
 class TwitchStreamServiceTest extends TestCase
 {
     /**

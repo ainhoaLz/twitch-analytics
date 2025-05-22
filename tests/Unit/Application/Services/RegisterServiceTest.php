@@ -5,10 +5,14 @@ namespace Tests\Unit\Application\Services;
 use App\Application\Services\RegisterService;
 use App\Domain\Exceptions\ServerException;
 use App\Domain\Interfaces\Database\UserRepositoryInterface;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class RegisterServiceTest extends TestCase
 {
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testRegisterUpdatesApiKeyIfUserExists()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
@@ -24,6 +28,9 @@ class RegisterServiceTest extends TestCase
         $this->assertNotEmpty($response['api_key']);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testRegisterInsertsNewUserIfNotExists()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
@@ -40,11 +47,14 @@ class RegisterServiceTest extends TestCase
         $this->assertNotEmpty($response['api_key']);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function testRegisterThrowsServerExceptionOnError()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
 
-        $mockedUserRepository->method('existsByEmail')->willThrowException(new \Exception());
+        $mockedUserRepository->method('existsByEmail')->willThrowException(new Exception());
 
         $service = new RegisterService($mockedUserRepository);
 
