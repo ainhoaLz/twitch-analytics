@@ -6,13 +6,17 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
 use App\Application\Services\TwitchStreamService;
+use App\Domain\Exceptions\UnauthorizedException;
+use App\Domain\Exceptions\UnknownException;
+use App\Domain\Exceptions\ServerException;
 
 class TwitchStreamServiceTest extends TestCase
 {
     /**
+     * @test
      * @throws Exception
      */
-    public function testGetStreamsReturnsValidResponse()
+    public function getStreamsReturnsValidResponse()
     {
         $mockedRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
 
@@ -43,5 +47,75 @@ class TwitchStreamServiceTest extends TestCase
 
         $response = $twitchStreamService->getStreams();
         $this->assertEquals($expectedResponse, $response);
+    }
+
+    /**
+     * @test
+     * @throws \Exception
+     * @throws Exception
+     */
+    public function getStreamsThrowsUnauthorizedException()
+    {
+        $mockedRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
+
+        $twitchStreamService = new TwitchStreamService($mockedRepository);
+
+        $mockApiResponse = [
+            'httpCode' => 401,
+            'streams' => ''
+        ];
+
+        $mockedRepository->expects($this->once())
+            ->method('getStreamsFromTwitch')
+            ->willReturn($mockApiResponse);
+
+        $this->expectException(UnauthorizedException::class);
+        $twitchStreamService->getStreams();
+    }
+    /**
+     * @test
+     * @throws \Exception
+     * @throws Exception
+     */
+    public function getStreamsThrowsUnknownException()
+    {
+        $mockedRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
+
+        $twitchStreamService = new TwitchStreamService($mockedRepository);
+
+        $mockApiResponse = [
+            'httpCode' => 310,
+            'streams' => ''
+        ];
+
+        $mockedRepository->expects($this->once())
+            ->method('getStreamsFromTwitch')
+            ->willReturn($mockApiResponse);
+
+        $this->expectException(UnknownException::class);
+        $twitchStreamService->getStreams();
+    }
+    /**
+     * @test
+     * @throws \Exception
+     * @throws Exception
+     */
+    public function getStreamsThrowsServerException()
+    {
+        $mockedRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
+
+        $twitchStreamService = new TwitchStreamService($mockedRepository);
+
+        $mockApiResponse = [
+            'httpCode' => 500,
+            'streams' => ''
+        ];
+
+        $mockedRepository->expects($this->once())
+            ->method('getStreamsFromTwitch')
+            ->willReturn($mockApiResponse);
+
+        $this->expectException(ServerException::class);
+        $twitchStreamService->getStreams();
     }
 }

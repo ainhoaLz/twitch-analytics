@@ -11,9 +11,10 @@ use PHPUnit\Framework\TestCase;
 class RegisterServiceTest extends TestCase
 {
     /**
+     * @test
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function testRegisterUpdatesApiKeyIfUserExists()
+    public function registerUpdatesApiKeyIfUserExists()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
 
@@ -29,9 +30,10 @@ class RegisterServiceTest extends TestCase
     }
 
     /**
+     * @test
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function testRegisterInsertsNewUserIfNotExists()
+    public function registerInsertsNewUserIfNotExists()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
 
@@ -48,9 +50,10 @@ class RegisterServiceTest extends TestCase
     }
 
     /**
+     * @test
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
-    public function testRegisterThrowsServerExceptionOnError()
+    public function registerThrowsServerExceptionOnError()
     {
         $mockedUserRepository = $this->createMock(UserRepositoryInterface::class);
 

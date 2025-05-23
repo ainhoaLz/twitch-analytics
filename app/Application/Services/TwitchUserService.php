@@ -28,21 +28,25 @@ class TwitchUserService
         $httpCode = $userInfo['httpCode'];
         $apiResponse = $userInfo['user'];
         $data = json_decode($apiResponse, true);
-        if (empty($data['data'])) {
-            throw new NotFoundException("User not found.");
+
+        switch ($httpCode) {
+            case 200:
+                if (empty($data['data'])) {
+                    throw new NotFoundException("User not found.");
+                }
+                return $data['data'][0];
+
+            case 401:
+                throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
+
+            case 404:
+                throw new NotFoundException("User not found.");
+
+            case 500:
+                throw new ServerException("Internal server error.");
+
+            default:
+                throw new UnknownException("Unknown error.", $httpCode);
         }
-        if ($httpCode == 200) {
-            return $data['data'][0];
-        }
-        if ($httpCode == 401) {
-            throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
-        }
-        if ($httpCode == 404) {
-            throw new NotFoundException("User not found.");
-        }
-        if ($httpCode == 500) {
-            throw new ServerException("Internal server error.");
-        }
-        throw new UnknownException("Unknown error.", $httpCode);
     }
 }

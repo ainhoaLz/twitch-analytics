@@ -7,6 +7,7 @@ use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface as DatabaseTwi
 use App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface as ApiTwitchTokenRepositoryInterface;
 use DateTime;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,8 +24,10 @@ class TwitchTokenServiceTest extends TestCase
         $this->apiRepositoryMock = $this->createMock(ApiTwitchTokenRepositoryInterface::class);
         $this->twitchTokenService = new TwitchTokenService($this->dbRepositoryMock, $this->apiRepositoryMock);
     }
-
-    public function testGetTokenReturnsStoredToken(): void
+    /**
+     * @test
+     */
+    public function getTokenReturnsStoredTokenIfNotExpired(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -47,7 +50,10 @@ class TwitchTokenServiceTest extends TestCase
         $this->assertEquals('valid_token', $token);
     }
 
-    public function testGetTokenFetchesNewTokenWhenExpired(): void
+    /**
+     * @test
+     */
+    public function getTokenFetchesNewTokenWhenExpired(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -72,7 +78,11 @@ class TwitchTokenServiceTest extends TestCase
         $this->assertEquals('new_token', $token);
     }
 
-    public function testIsTokenValidReturnsTrueForValidToken(): void
+    /**
+     * @test
+     * @throws Exception
+     */
+    public function isTokenValidReturnsTrueForValidToken(): void
     {
         $request = $this->createMock(Request::class);
 
@@ -93,7 +103,11 @@ class TwitchTokenServiceTest extends TestCase
         $this->assertTrue($isValid);
     }
 
-    public function testIsTokenValidReturnsFalseForMissingAuthorizationHeader(): void
+    /**
+     * @test
+     * @throws Exception
+     */
+    public function isTokenValidReturnsFalseForMissingAuthorizationHeader(): void
     {
         $request = $this->createMock(Request::class);
 
