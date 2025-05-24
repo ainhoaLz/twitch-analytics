@@ -43,6 +43,5 @@ class TwitchUserService
         if ($httpCode == 500) {
             throw new ServerException("Internal server error.");
         }
-        throw new UnknownException("Unknown error.", $httpCode);
     }
 }
