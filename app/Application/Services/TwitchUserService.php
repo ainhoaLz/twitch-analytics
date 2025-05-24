@@ -28,7 +28,7 @@ class TwitchUserService
         $userInfo = $this->userRepository->getUser($streamerId);
         $httpCode = $userInfo['httpCode'];
         $user = $userInfo['user'];
-        if (empty($user)) {
+        if (empty($user) && ($httpCode == 200 || $httpCode == 400)) {
             throw new NotFoundException("User not found.");
         }
         if ($httpCode == 200) {
@@ -43,5 +43,6 @@ class TwitchUserService
         if ($httpCode == 500) {
             throw new ServerException("Internal server error.");
         }
+        throw new UnknownException("Unknown error.", $httpCode);
     }
 }

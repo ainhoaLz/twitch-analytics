@@ -2,6 +2,7 @@
 
 namespace App\Application\Services;
 
+use App\Domain\Exceptions\InvalidParameterException;
 use App\Domain\Exceptions\ServerException;
 use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Exceptions\UnknownException;
@@ -34,7 +35,7 @@ class TwitchEnrichedStreamService
         if ($data['httpCode'] == 200) {
             return $this->processStreamData($data['streams'], $data['httpCode']);
         }
-        return [null, $data['httpCode']];
+        return [$data['httpCode'], null];
     }
 
     private function processStreamData($streams, $httpCode): array
@@ -51,21 +52,21 @@ class TwitchEnrichedStreamService
             ];
         }
 
-        return [$resp, $httpCode];
+        return [$httpCode, $resp];
     }
 
     private function addDataToResponse($streams, $limit)
     {
-        if ($streams[1] != 200) {
+        if ($streams[0] != 200) {
             return $streams;
         }
-        usort($streams[0], [$this, "ordenar"]);
+        usort($streams[1], [$this, "ordenar"]);
 
-        if (!$this->isLimitValid($limit, count($streams[0]))) {
+        if (!$this->isLimitValid($limit, count($streams[1]))) {
             return [400, null];
         }
 
-        $limitedStreams = array_slice($streams[0], 0, $limit);
+        $limitedStreams = array_slice($streams[1], 0, $limit);
 
         return $this->addUserInfo($limitedStreams);
     }
@@ -122,17 +123,21 @@ class TwitchEnrichedStreamService
 
     private function fetchResponse($response): array
     {
-        if ($response[0] == 200) {
+        $httpCode = $response[0];
+        if ($httpCode == 200) {
             http_response_code(200);
             return array_map(fn ($streamData) => new EnrichedStream($streamData), $response[1]);
         }
-        if ($response[0] == 401) {
+        if ($httpCode == 401) {
             throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
         }
-        if ($response[0] == 500) {
+        if ($httpCode == 400) {
+            throw new InvalidParameterException("Invalid 'limit' parameter.");
+        }
+        if ($httpCode == 500) {
             throw new ServerException("Internal server error.");
         }
-        throw new UnknownException("Unknown error.", $response[0]);
+        throw new UnknownException("Unknown error.", $httpCode);
     }
 
     private function ordenar($var1, $var2)

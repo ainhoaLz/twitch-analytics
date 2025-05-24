@@ -44,14 +44,16 @@ class TwitchUserRepository implements TwichUserRepositoryInterface
 
         $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
         curl_close($curlh);
-        http_response_code($httpCode);
 
         $user = null;
 
         if ($httpCode === 200) {
             $body = json_decode($apiResponse, true);
             if (empty($body['data'][0])) {
-                throw new NotFoundException("User not found.");
+                return [
+                    'httpCode' => $httpCode,
+                    'user'     => null
+                ];
             }
             $raw = $body['data'][0];
             $attrs = [
@@ -68,8 +70,6 @@ class TwitchUserRepository implements TwichUserRepositoryInterface
             ];
             $user = new User($attrs);
         }
-
-        http_response_code($httpCode);
         return [
             'httpCode' => $httpCode,
             'user'     => $user,
