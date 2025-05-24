@@ -37,10 +37,9 @@ class GetStreamsController extends BaseController
             return response()->json($tokenValidation, 401);
         }
         try {
-            $response = $this->twitchStreamService->getStreams();
-            $httpCode = $response['httpCode'] ?? 200;
-            unset($response['httpCode']);
-            return response()->json($response, $httpCode);
+            $streams = $this->twitchStreamService->getStreams();
+            $response = array_map(fn ($stream) => $stream->toArray(), $streams);
+            return response()->json($response, 200);
         } catch (UnauthorizedException $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         } catch (ServerException $exception) {

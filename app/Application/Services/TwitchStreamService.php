@@ -23,25 +23,12 @@ class TwitchStreamService
      */
     public function getStreams(): array
     {
-        $apiResponse = $this->streamRepository->getStreamsFromTwitch();
-        $httpCode = $apiResponse['httpCode'];
-        $streams = $apiResponse['streams'];
+        $streamsInfo = $this->streamRepository->getStreamsFromTwitch();
+        $httpCode = $streamsInfo['httpCode'];
+        $streams = $streamsInfo['streams'];
 
         if ($httpCode === 200) {
-            http_response_code(200);
-            $data = json_decode($streams, true);
-            if (isset($data["data"])) {
-                $resp = [];
-                foreach ($data["data"] as $stream) {
-                    if ($stream["type"] === "live") {
-                        $resp[] = [
-                            "title" => $stream["title"],
-                            "user_name" => $stream["user_name"],
-                        ];
-                    }
-                }
-                return $resp;
-            }
+            return $streams;
         }
 
         if ($httpCode === 401) {

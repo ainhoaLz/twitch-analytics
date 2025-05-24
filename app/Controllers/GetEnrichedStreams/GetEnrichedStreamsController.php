@@ -35,10 +35,11 @@ class GetEnrichedStreamsController
         }
         try {
             $limitValue = $this->limitValidator->validate($request->input('limit'));
-            $response = $this->enrichedService->getEnrichedStreams($limitValue);
-            $httpCode = $response['httpCode'] ?? 200;
-            unset($response['httpCode']);
-            return response()->json($response, $httpCode);
+            $enrichedStreams = $this->enrichedService->getEnrichedStreams($limitValue);
+            return response()->json(
+                array_map(fn ($s) => $s->toArray(), $enrichedStreams),
+                200
+            );
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
         } catch (UnauthorizedException $exception) {

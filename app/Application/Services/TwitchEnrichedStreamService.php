@@ -7,6 +7,7 @@ use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
+use App\Domain\Models\EnrichedStream;
 
 class TwitchEnrichedStreamService
 {
@@ -28,7 +29,7 @@ class TwitchEnrichedStreamService
 
     private function getStreams(): array
     {
-        $data = $this->streamRepository->getStreamsFromTwitch();
+        $data = $this->streamRepository->getEnrichedStreamsFromTwitch();
 
         if ($data['httpCode'] == 200) {
             return $this->processStreamData($data['streams'], $data['httpCode']);
@@ -36,23 +37,21 @@ class TwitchEnrichedStreamService
         return [null, $data['httpCode']];
     }
 
-    private function processStreamData($response, $httpCode): array
+    private function processStreamData($streams, $httpCode): array
     {
-        $data = json_decode($response, true);
-        if (isset($data["data"])) {
-            $resp = [];
-            foreach ($data["data"] as $stream) {
-                $resp[] = [
-                    "stream_id" => $stream["id"],
-                    "user_id" => $stream["user_id"],
-                    "user_name" => $stream["user_name"],
-                    "viewer_count" => $stream["viewer_count"],
-                    "title" => $stream["title"],
-                ];
-            }
-            return [$resp, $httpCode];
+        $resp = [];
+
+        foreach ($streams as $stream) {
+            $resp[] = [
+                'stream_id' => $stream->getStreamId(),
+                'user_id' => $stream->getUserId(),
+                'user_name' => $stream->getUserName(),
+                'viewer_count' => $stream->getViewerCount(),
+                'title' => $stream->getTitle(),
+            ];
         }
-        return [null, $httpCode];
+
+        return [$resp, $httpCode];
     }
 
     private function addDataToResponse($streams, $limit)
@@ -93,7 +92,13 @@ class TwitchEnrichedStreamService
 
     private function fetchUserData($response): ?array
     {
-        $data = json_decode($response, true);
+        // Si $response ya es array, no hacer json_decode
+        if (is_array($response)) {
+            $data = $response;
+        } else {
+            $data = json_decode($response, true);
+        }
+
         if (isset($data["data"])) {
             $users = [];
             foreach ($data["data"] as $user) {
@@ -122,7 +127,7 @@ class TwitchEnrichedStreamService
     {
         if ($response[0] == 200) {
             http_response_code(200);
-            return $response[1];
+            return array_map(fn ($streamData) => new EnrichedStream($streamData), $response[1]);
         }
         if ($response[0] == 401) {
             throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
