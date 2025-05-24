@@ -92,24 +92,21 @@ class TwitchEnrichedStreamService
 
     private function fetchUserData($response): ?array
     {
-        // Si $response ya es array, no hacer json_decode
-        if (is_array($response)) {
-            $data = $response;
-        } else {
-            $data = json_decode($response, true);
+        $data = is_array($response) ? $response : json_decode($response, true);
+
+        if (!isset($data["data"])) {
+            return null;
         }
 
-        if (isset($data["data"])) {
-            $users = [];
-            foreach ($data["data"] as $user) {
-                $users[$user["id"]] = [
-                    "user_display_name" => $user["display_name"],
-                    "profile_image_url" => $user["profile_image_url"],
-                ];
-            }
-            return $users;
+        $users = [];
+        foreach ($data["data"] as $user) {
+            $users[$user["id"]] = [
+                "user_display_name" => $user["display_name"],
+                "profile_image_url" => $user["profile_image_url"],
+            ];
         }
-        return null;
+
+        return $users;
     }
 
     private function addUserToStreams(&$stream, $users): void
