@@ -8,6 +8,7 @@ use App\Domain\Exceptions\UnknownException;
 use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Models\User;
 use Exception;
 
 class TwitchUserService
@@ -22,17 +23,16 @@ class TwitchUserService
     /**
      * @throws Exception
      */
-    public function getUserById(mixed $streamerId): array
+    public function getUserById(mixed $streamerId): User
     {
         $userInfo = $this->userRepository->getUser($streamerId);
         $httpCode = $userInfo['httpCode'];
-        $apiResponse = $userInfo['user'];
-        $data = json_decode($apiResponse, true);
-        if (empty($data['data'])) {
+        $user = $userInfo['user'];
+        if (empty($user)) {
             throw new NotFoundException("User not found.");
         }
         if ($httpCode == 200) {
-            return $data['data'][0];
+            return $user;
         }
         if ($httpCode == 401) {
             throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
