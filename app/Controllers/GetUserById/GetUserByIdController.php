@@ -41,10 +41,8 @@ class GetUserByIdController extends BaseController
         }
         try {
             $twitchUserId = $this->userIdValidator->validate($request->input('id'));
-            $response = $this->userService->getUserById($twitchUserId);
-            $httpCode = $response['httpCode'] ?? 200;
-            unset($response['httpCode']);
-            return response()->json($response, $httpCode);
+            $user = $this->userService->getUserById($twitchUserId);
+            return response()->json($user->toArray(), 200);
         } catch (ValidationException $exception) {
             return response()->json(['error' => $exception->getMessage()], 400);
         } catch (NotFoundException $exception) {

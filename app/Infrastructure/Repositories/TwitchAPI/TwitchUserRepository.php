@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Repositories\TwitchAPI;
 
+use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Models\User;
 
 class TwitchUserRepository implements TwichUserRepositoryInterface
 {
@@ -43,9 +45,34 @@ class TwitchUserRepository implements TwichUserRepositoryInterface
         $httpCode = curl_getinfo($curlh, CURLINFO_HTTP_CODE);
         curl_close($curlh);
         http_response_code($httpCode);
+
+        $user = null;
+
+        if ($httpCode === 200) {
+            $body = json_decode($apiResponse, true);
+            if (empty($body['data'][0])) {
+                throw new NotFoundException("User not found.");
+            }
+            $raw = $body['data'][0];
+            $attrs = [
+                'userId'          => $raw['id'],
+                'login'           => $raw['login'],
+                'displayName'     => $raw['display_name'],
+                'type'            => $raw['type'],
+                'broadcasterType' => $raw['broadcaster_type'],
+                'description'     => $raw['description'],
+                'profileImageUrl' => $raw['profile_image_url'],
+                'offlineImageUrl' => $raw['offline_image_url'],
+                'viewCount'       => (int)$raw['view_count'],
+                'createdAt'       => $raw['created_at'],
+            ];
+            $user = new User($attrs);
+        }
+
+        http_response_code($httpCode);
         return [
             'httpCode' => $httpCode,
-            'user' => $apiResponse
+            'user'     => $user,
         ];
     }
     public function getMultipleUsers(array $streamerIds): array

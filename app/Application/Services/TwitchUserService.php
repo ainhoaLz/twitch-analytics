@@ -8,6 +8,7 @@ use App\Domain\Exceptions\UnknownException;
 use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Models\User;
 use Exception;
 
 class TwitchUserService
@@ -22,31 +23,25 @@ class TwitchUserService
     /**
      * @throws Exception
      */
-    public function getUserById(mixed $streamerId): array
+    public function getUserById(mixed $streamerId): User
     {
         $userInfo = $this->userRepository->getUser($streamerId);
         $httpCode = $userInfo['httpCode'];
-        $apiResponse = $userInfo['user'];
-        $data = json_decode($apiResponse, true);
-
-        switch ($httpCode) {
-            case 200:
-                if (empty($data['data'])) {
-                    throw new NotFoundException("User not found.");
-                }
-                return $data['data'][0];
-
-            case 401:
-                throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
-
-            case 404:
-                throw new NotFoundException("User not found.");
-
-            case 500:
-                throw new ServerException("Internal server error.");
-
-            default:
-                throw new UnknownException("Unknown error.", $httpCode);
+        $user = $userInfo['user'];
+        if (empty($user)) {
+            throw new NotFoundException("User not found.");
+        }
+        if ($httpCode == 200) {
+            return $user;
+        }
+        if ($httpCode == 401) {
+            throw new UnauthorizedException("Unauthorized. Twitch access token is invalid or has expired.");
+        }
+        if ($httpCode == 404) {
+            throw new NotFoundException("User not found.");
+        }
+        if ($httpCode == 500) {
+            throw new ServerException("Internal server error.");
         }
     }
 }
