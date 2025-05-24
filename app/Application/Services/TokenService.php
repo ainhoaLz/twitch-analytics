@@ -22,12 +22,12 @@ class TokenService
 
     public function generateToken(array|null $data): array
     {
-        try {
-            $userId = $this->userRepository->getUserId($data["email"], $data["api_key"]);
-            if (empty($userId)) {
-                throw new UnauthorizedException("Unauthorized. API access token is invalid.");
-            }
+        $userId = $this->userRepository->getUserId($data["email"], $data["api_key"]);
+        if (empty($userId)) {
+            throw new UnauthorizedException("Unauthorized. API access token is invalid.");
+        }
 
+        try {
             $token = bin2hex(random_bytes(32));
             $tokenId = $this->tokenRepository->getNewTokenId();
 

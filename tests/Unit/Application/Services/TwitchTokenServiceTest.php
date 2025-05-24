@@ -27,7 +27,7 @@ class TwitchTokenServiceTest extends TestCase
     /**
      * @test
      */
-    public function getTokenReturnsStoredTokenIfNotExpired(): void
+    public function getsToken(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -35,12 +35,10 @@ class TwitchTokenServiceTest extends TestCase
             'token' => 'valid_token',
             'expires_at' => (new DateTime('+1 hour'))->format('Y-m-d H:i:s')
         ];
-
         $this->dbRepositoryMock
             ->expects($this->once())
             ->method('getStoredToken')
             ->willReturn($storedToken);
-
         $this->apiRepositoryMock
             ->expects($this->never())
             ->method('getNewToken');
@@ -53,7 +51,7 @@ class TwitchTokenServiceTest extends TestCase
     /**
      * @test
      */
-    public function getTokenFetchesNewTokenWhenExpired(): void
+    public function givenUserWithExpiredTokenReturnsNewToken(): void
     {
         $clientId = 'test_client_id';
         $clientSecret = 'test_client_secret';
@@ -61,12 +59,10 @@ class TwitchTokenServiceTest extends TestCase
             'token' => 'expired_token',
             'expires_at' => (new DateTime('-1 hour'))->format('Y-m-d H:i:s')
         ];
-
         $this->dbRepositoryMock
             ->expects($this->once())
             ->method('getStoredToken')
             ->willReturn($storedToken);
-
         $this->apiRepositoryMock
             ->expects($this->once())
             ->method('getNewToken')
@@ -85,13 +81,11 @@ class TwitchTokenServiceTest extends TestCase
     public function isTokenValidReturnsTrueForValidToken(): void
     {
         $request = $this->createMock(Request::class);
-
         $request
             ->expects($this->once())
             ->method('header')
             ->with('Authorization')
             ->willReturn('Bearer valid_token');
-
         $this->dbRepositoryMock
             ->expects($this->once())
             ->method('isTokenValidInDB')
@@ -110,13 +104,11 @@ class TwitchTokenServiceTest extends TestCase
     public function isTokenValidReturnsFalseForMissingAuthorizationHeader(): void
     {
         $request = $this->createMock(Request::class);
-
         $request
             ->expects($this->once())
             ->method('header')
             ->with('Authorization')
             ->willReturn(null);
-
         $this->dbRepositoryMock
             ->expects($this->never())
             ->method('isTokenValidInDB');

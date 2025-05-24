@@ -25,10 +25,9 @@ class TwitchStreamService
     {
         $streamsInfo = $this->streamRepository->getStreamsFromTwitch();
         $httpCode = $streamsInfo['httpCode'];
-        $streams = $streamsInfo['streams'];
 
         if ($httpCode === 200) {
-            return $streams;
+            return $streamsInfo['streams'];
         }
 
         if ($httpCode === 401) {

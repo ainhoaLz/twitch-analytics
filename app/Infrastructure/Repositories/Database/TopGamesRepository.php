@@ -68,7 +68,7 @@ class TopGamesRepository implements TopGamesRepositoryInterface
         }
     }
 
-    public function getUpdatedAt(): array
+    public function getUpdatedAt(): ?array
     {
         $checkQuery = $this->connection->query("SELECT updated_at from top_games");
         return $checkQuery->fetch();

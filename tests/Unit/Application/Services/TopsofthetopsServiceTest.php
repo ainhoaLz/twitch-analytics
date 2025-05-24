@@ -3,79 +3,140 @@
 namespace Tests\Unit\Application\Services;
 
 use App\Application\Services\TopsofthetopsService;
+use App\Domain\Exceptions\NotFoundException;
+use App\Domain\Exceptions\ServerException;
+use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\Database\TopGamesRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TopsofthetopsRepositoryInterface;
-use PHPUnit\Framework\MockObject\Exception;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class TopsofthetopsServiceTest extends TestCase
 {
-    /**
-     * @throws \DateMalformedStringException
-     * @throws Exception
-     */
-    public function testGetTopsofthetopsReturnsValidResponse()
+    private $dbRepository;
+    private $twitchRepository;
+    private TopsofthetopsService $service;
+
+    protected function setUp(): void
     {
-        $mockedDbRepository = $this->createMock(TopGamesRepositoryInterface::class);
-        $mockedApiRepository = $this->createMock(TopsofthetopsRepositoryInterface::class);
+        parent::setUp();
+        $this->dbRepository = $this->createMock(TopGamesRepositoryInterface::class);
+        $this->twitchRepository = $this->createMock(TopsofthetopsRepositoryInterface::class);
+        $this->service = new TopsofthetopsService($this->dbRepository, $this->twitchRepository);
+    }
 
-        // Mock database repository behavior
-        $mockedDbRepository->method('getUpdatedAt')->willReturn([]);
-        $mockedDbRepository->method('getTopGames')->willReturn([]);
-
-        // Mock API repository behavior
-        $mockedApiRepository->method('getTop3Games')->willReturn([
-            'response' => json_encode([
-                'data' => [
-                    ['id' => '1', 'name' => 'Game 1'],
-                    ['id' => '2', 'name' => 'Game 2'],
-                ]
-            ]),
-            'httpCode' => 200,
+    /**
+     * @test
+     * @throws \DateMalformedStringException
+     */
+    public function returnsDataFromTwitchWhenDbIsEmpty(): void
+    {
+        $this->dbRepository->method('getUpdatedAt')->willReturn(null);
+        $topGamesResponse = json_encode([
+            'data' => [
+                ['id' => '1', 'name' => 'Game 1'],
+                ['id' => '2', 'name' => 'Game 2'],
+                ['id' => '3', 'name' => 'Game 3'],
+            ]
         ]);
-
-        $mockedApiRepository->method('getTop40Videos')->willReturn([
-            'response' => json_encode([
-                'data' => [
-                    [
-                        'user_name' => 'User1',
-                        'title' => 'Video 1',
-                        'view_count' => 100,
-                        'duration' => '10m',
-                        'created_at' => '2023-01-01',
-                    ],
-                ]
-            ]),
-            'httpCode' => 200,
-        ]);
-
-        // Create a partial mock of the service to mock callTwitchAPI
-        $service = $this->getMockBuilder(TopsofthetopsService::class)
-            ->setConstructorArgs([$mockedDbRepository, $mockedApiRepository])
-            ->onlyMethods(['callTwitchAPI'])
-            ->getMock();
-
-        $service->method('getTopsofthetops')->willReturn([
-            [
+        $this->twitchRepository
+            ->method('getTop3Games')
+            ->willReturn(['response' => $topGamesResponse, 'httpCode' => 200]);
+        $videosResponse = json_encode([
+            'data' => [
                 [
-                    "game_id" => "1",
-                    "game_name" => "Game 1",
-                    "user_name" => "User1",
-                    "total_videos" => 1,
-                    "total_views" => 100,
-                    "most_viewed_title" => "Video 1",
-                    "most_viewed_views" => 100,
-                    "most_viewed_duration" => "10m",
-                    "most_viewed_created_at" => "2023-01-01",
+                    'user_name' => 'StreamerA',
+                    'title' => 'Epic Play',
+                    'view_count' => 1000,
+                    'duration' => '2h30m',
+                    'created_at' => '2024-01-01T00:00:00Z'
+                ],
+                [
+                    'user_name' => 'StreamerA',
+                    'title' => 'More Plays',
+                    'view_count' => 500,
+                    'duration' => '1h20m',
+                    'created_at' => '2024-01-02T00:00:00Z'
                 ]
-            ],
-            200
+            ]
         ]);
+        $this->twitchRepository
+            ->method('getTop40Videos')
+            ->willReturn(['response' => $videosResponse, 'httpCode' => 200]);
 
-        $response = $service->getTopsofthetops(3600);
+        $result = $this->service->getTopsofthetops(3600);
 
-        $this->assertIsArray($response);
-        $this->assertCount(1, $response);
-        $this->assertEquals('Game 1', $response[0]['game_name']);
+        $this->assertCount(3, $result);
+        foreach ($result as $entry) {
+            $this->assertEquals('StreamerA', $entry['user_name']);
+            $this->assertEquals(2, $entry['total_videos']);
+            $this->assertEquals(1500, $entry['total_views']);
+            $this->assertEquals('Epic Play', $entry['most_viewed_title']);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function givenEmptyTwitchResponseThrowsNotFoundException(): void
+    {
+        $this->dbRepository->method('getUpdatedAt')->willReturn(null);
+        $this->twitchRepository->method('getTop3Games')
+            ->willReturn(['response' => null, 'httpCode' => 200]);
+
+        $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage("Not Found. No data available.");
+
+        $this->service->getTopsofthetops(3600);
+    }
+
+    /**
+     * @test
+     */
+    public function givenHttp500FromTwitchThrowsServerException(): void
+    {
+        $this->dbRepository->method('getUpdatedAt')->willReturn(null);
+        $this->twitchRepository->method('getTop3Games')
+            ->willReturn(['response' => null, 'httpCode' => 500]);
+
+        $this->expectException(ServerException::class);
+        $this->expectExceptionMessage("Internal server error.");
+
+        $this->service->getTopsofthetops(3600);
+    }
+
+    /**
+     * @test
+     */
+    public function givenUnknownHttpCodeThrowsUnknownException(): void
+    {
+        $this->dbRepository->method('getUpdatedAt')->willReturn(null);
+        $this->twitchRepository->method('getTop3Games')
+            ->willReturn(['response' => null, 'httpCode' => 418]);
+
+        $this->expectException(UnknownException::class);
+        $this->expectExceptionMessage("Unknown error.");
+
+        $this->service->getTopsofthetops(3600);
+    }
+
+    /**
+     * @test
+     * @throws \DateMalformedStringException
+     */
+    public function returnsDataFromDBWhenInfoIsRecent(): void
+    {
+        $now = new DateTime();
+        $recentTime = $now->format('Y-m-d H:i:s');
+        $this->dbRepository->method('getUpdatedAt')->willReturn(['updated_at' => $recentTime]);
+        $expectedDbResult = [
+            ['game_id' => '1', 'game_name' => 'Game 1'],
+            ['game_id' => '2', 'game_name' => 'Game 2']
+        ];
+        $this->dbRepository->method('getTopGames')->willReturn($expectedDbResult);
+
+        $result = $this->service->getTopsofthetops(3600);
+
+        $this->assertEquals($expectedDbResult, $result);
     }
 }
