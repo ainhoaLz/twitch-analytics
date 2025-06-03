@@ -11,6 +11,6 @@ class GetTopsOfTheTopsValidator
         if (!ctype_digit($since) || $since < 0) {
             throw new ValidationException("Invalid or missing 'since' parameter.");
         }
-        return ctype_digit($since);
+        return (int)($since);
     }
 }
