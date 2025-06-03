@@ -3,10 +3,10 @@
 namespace App\Infrastructure\Repositories\TwitchAPI;
 
 use App\Domain\Exceptions\NotFoundException;
-use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use App\Domain\Models\User;
 
-class TwitchUserRepository implements TwichUserRepositoryInterface
+class TwitchUserRepository implements TwitchUserRepositoryInterface
 {
     protected string $accessToken;
     protected string $clientId;

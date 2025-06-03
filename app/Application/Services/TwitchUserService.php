@@ -7,15 +7,15 @@ use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Exceptions\UnknownException;
 use App\Domain\Exceptions\NotFoundException;
 use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
-use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use App\Domain\Models\User;
 use Exception;
 
 class TwitchUserService
 {
-    private TwichUserRepositoryInterface $userRepository;
+    private TwitchUserRepositoryInterface $userRepository;
 
-    public function __construct(TwichUserRepositoryInterface $userRepository)
+    public function __construct(TwitchUserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

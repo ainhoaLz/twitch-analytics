@@ -4,6 +4,8 @@ namespace Tests\Integration\Controllers;
 
 use App\Application\Services\TokenService;
 use App\Controllers\Token\TokenController;
+use App\Domain\Interfaces\Database\TokenRepositoryInterface;
+use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Mockery;
@@ -12,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 class TokenControllerTest extends TestCase
 {
     private TokenController $controller;
-    private TokenService $tokenService;
 
     /**
      * @throws \PHPUnit\Framework\MockObject\Exception
@@ -20,9 +21,10 @@ class TokenControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->tokenService = $this->createMock(TokenService::class);
-        $this->controller = new TokenController($this->tokenService);
+        $tokenRepository = $this->createMock(TokenRepositoryInterface::class);
+        $userRepository = $this->createMock(UserRepositoryInterface::class);
+        $tokenService = new TokenService($tokenRepository, $userRepository);
+        $this->controller = new TokenController($tokenService);
     }
 
     /**
