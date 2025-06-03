@@ -6,17 +6,17 @@ use App\Domain\Exceptions\InvalidParameterException;
 use App\Domain\Exceptions\ServerException;
 use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Exceptions\UnknownException;
-use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
 use App\Domain\Models\EnrichedStream;
 
 class TwitchEnrichedStreamService
 {
     private TwitchStreamRepositoryInterface $streamRepository;
-    private TwichUserRepositoryInterface $userRepository;
+    private TwitchUserRepositoryInterface $userRepository;
     public function __construct(
         TwitchStreamRepositoryInterface $streamRepository,
-        TwichUserRepositoryInterface $userRepository
+        TwitchUserRepositoryInterface $userRepository
     ) {
         $this->userRepository = $userRepository;
         $this->streamRepository = $streamRepository;

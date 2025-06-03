@@ -6,7 +6,6 @@ use App\Domain\Exceptions\ServerException;
 use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Interfaces\Database\TokenRepositoryInterface;
 use App\Domain\Interfaces\Database\UserRepositoryInterface;
-use App\Helpers\ResponseHelper;
 use Throwable;
 
 class TokenService

@@ -8,21 +8,21 @@ use App\Domain\Exceptions\ServerException;
 use App\Domain\Exceptions\UnauthorizedException;
 use App\Domain\Exceptions\UnknownException;
 use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
-use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use App\Domain\Models\EnrichedStream;
 use PHPUnit\Framework\TestCase;
 
 class TwitchEnrichedStreamServiceTest extends TestCase
 {
     private TwitchStreamRepositoryInterface $streamRepository;
-    private TwichUserRepositoryInterface $userRepository;
+    private TwitchUserRepositoryInterface $userRepository;
     private TwitchEnrichedStreamService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->streamRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
-        $this->userRepository = $this->createMock(TwichUserRepositoryInterface::class);
+        $this->userRepository = $this->createMock(TwitchUserRepositoryInterface::class);
         $this->service = new TwitchEnrichedStreamService($this->streamRepository, $this->userRepository);
     }
 

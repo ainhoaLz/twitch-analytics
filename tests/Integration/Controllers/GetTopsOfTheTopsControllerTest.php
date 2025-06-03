@@ -6,6 +6,9 @@ use App\Application\Services\TopsofthetopsService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\GetTopsOfTheTops\GetTopsOfTheTopsController;
+use App\Domain\Interfaces\Database\TopGamesRepositoryInterface;
+use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TopsofthetopsRepositoryInterface;
 use Illuminate\Http\Request;
 use Mockery;
 use PHPUnit\Framework\MockObject\Exception;
@@ -15,8 +18,6 @@ use ReflectionClass;
 class GetTopsOfTheTopsControllerTest extends TestCase
 {
     private GetTopsOfTheTopsController $controller;
-    private TwitchTokenService $tokenService;
-    private TopsofthetopsService $topsofthetopsService;
 
     /**
      * @throws Exception
@@ -25,10 +26,15 @@ class GetTopsOfTheTopsControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->tokenService = $this->createMock(TwitchTokenService::class);
-        $this->topsofthetopsService = $this->createMock(TopsofthetopsService::class);
+        $twitchTokenRepo = $this->createMock(TwitchTokenRepositoryInterface::class);
+        $apiRepository = $this->createMock(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class);
+        $tokenService = new TwitchTokenService($twitchTokenRepo, $apiRepository);
 
-        $this->controller = new GetTopsOfTheTopsController($this->tokenService, $this->topsofthetopsService);
+        $topGamesRepository = $this->createMock(TopGamesRepositoryInterface::class);
+        $topsOfTheTopsRepo = $this->createMock(TopsofthetopsRepositoryInterface::class);
+        $topsofthetopsService = new TopsofthetopsService($topGamesRepository, $topsOfTheTopsRepo);
+
+        $this->controller = new GetTopsOfTheTopsController($tokenService, $topsofthetopsService);
 
         $mockController = $this->createMock(Controller::class);
         $mockController->method('validateToken')

@@ -6,6 +6,9 @@ use App\Application\Services\TwitchEnrichedStreamService;
 use App\Application\Services\TwitchTokenService;
 use App\Controllers\Controller;
 use App\Controllers\GetEnrichedStreams\GetEnrichedStreamsController;
+use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use Illuminate\Http\Request;
 use Mockery;
 use PHPUnit\Framework\MockObject\Exception;
@@ -15,8 +18,6 @@ use ReflectionClass;
 class GetEnrichedStreamsControllerTest extends TestCase
 {
     private GetEnrichedStreamsController $controller;
-    private TwitchEnrichedStreamService $streamService;
-    private TwitchTokenService $tokenService;
 
     /**
      * @throws Exception
@@ -24,10 +25,16 @@ class GetEnrichedStreamsControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->streamService = $this->createMock(TwitchEnrichedStreamService::class);
-        $this->tokenService = $this->createMock(TwitchTokenService::class);
 
-        $this->controller = new GetEnrichedStreamsController($this->streamService, $this->tokenService);
+        $streamRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
+        $userRepository = $this->createMock(TwitchUserRepositoryInterface::class);
+        $streamService = new TwitchEnrichedStreamService($streamRepository, $userRepository);
+
+        $twitchTokenRepo = $this->createMock(TwitchTokenRepositoryInterface::class);
+        $apiRepository = $this->createMock(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class);
+        $tokenService = new TwitchTokenService($twitchTokenRepo, $apiRepository);
+
+        $this->controller = new GetEnrichedStreamsController($streamService, $tokenService);
 
         $mockController = $this->createMock(Controller::class);
         $mockController->method('validateToken')

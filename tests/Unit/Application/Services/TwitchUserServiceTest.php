@@ -4,7 +4,7 @@ namespace Tests\Unit\Application\Services;
 
 use App\Application\Services\TwitchUserService;
 use App\Domain\Exceptions\NotFoundException;
-use App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use App\Domain\Models\User;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,7 +23,7 @@ class TwitchUserServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mockedRepository = $this->createMock(TwichUserRepositoryInterface::class);
+        $this->mockedRepository = $this->createMock(TwitchUserRepositoryInterface::class);
         $this->twitchUserService = new TwitchUserService($this->mockedRepository);
     }
 

@@ -6,6 +6,8 @@ use App\Application\Services\TwitchTokenService;
 use App\Application\Services\TwitchUserService;
 use App\Controllers\Controller;
 use App\Controllers\GetUserById\GetUserByIdController;
+use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
+use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
 use Illuminate\Http\Request;
 use Mockery;
 use PHPUnit\Framework\MockObject\Exception;
@@ -15,8 +17,6 @@ use ReflectionClass;
 class GetUserByIdControllerTest extends TestCase
 {
     private GetUserByIdController $controller;
-    private TwitchUserService $userService;
-    private TwitchTokenService $tokenService;
 
     /**
      * @throws Exception
@@ -25,9 +25,14 @@ class GetUserByIdControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->tokenService = $this->createMock(TwitchTokenService::class);
-        $this->userService = $this->createMock(TwitchUserService::class);
-        $this->controller = new GetUserByIdController($this->userService, $this->tokenService);
+        $twitchTokenRepo = $this->createMock(TwitchTokenRepositoryInterface::class);
+        $apiRepository = $this->createMock(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class);
+        $tokenService = new TwitchTokenService($twitchTokenRepo, $apiRepository);
+
+        $userRepository = $this->createMock(TwitchUserRepositoryInterface::class);
+        $userService = new TwitchUserService($userRepository);
+
+        $this->controller = new GetUserByIdController($userService, $tokenService);
 
         $mockController = $this->createMock(Controller::class);
         $mockController->method('validateToken')

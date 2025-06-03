@@ -102,7 +102,7 @@ $app->singleton(
 
 
 $app->singleton(
-    \App\Domain\Interfaces\TwitchAPI\TwichUserRepositoryInterface::class,
+    \App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface::class,
     function ($app) {
         $clientId = getenv('TWITCH_CLIENT_ID');
         $clientSecret = getenv('TWITCH_CLIENT_SECRET');
