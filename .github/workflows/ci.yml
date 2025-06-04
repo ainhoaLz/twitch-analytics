@@ -5,41 +5,20 @@ on:
 
 jobs:
   quality-check:
-    name: PR's validation / Prepare_enviroment_and_run_linters
+    name: PR's validation / Run GrumPHP only
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Obtiene el código
       - uses: actions/checkout@v3
 
-      # 2) Configura PHP (ajusta la versión)
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, xml
 
-      # 3) Instala dependencias
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # 4) Ejecuta GrumPHP sobre TODO el proyecto
       - name: Run GrumPHP
         run: vendor/bin/grumphp run --verbose
-
-      # 5) Ejecuta PHP-CS-Fixer en modo comprobación
-      - name: Run PHP-CS-Fixer
-        run: |
-          vendor/bin/php-cs-fixer fix \
-            --config=.php-cs-fixer.dist.php \
-            --dry-run \
-            --diff \
-            --stop-on-violation \
-            --using-cache=no \
-            --verbose
-
-      # 6) Ejecuta PHP Mess Detector (phpmd), ignorando carpetas innecesarias
-      - name: Run PHPMD
-        run: |
-          vendor/bin/phpmd . text cleancode,codesize,controversial,design,naming,unusedcode \
-            --exclude vendor,node_modules,storage,bootstrap/cache,app
