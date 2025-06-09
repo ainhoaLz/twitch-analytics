@@ -19,9 +19,6 @@ class Controller extends BaseController
             http_response_code(401);
             return ["error" => "Unauthorized. Token is invalid or expired."];
         }
-
-
-
         return 200;
     }
 }

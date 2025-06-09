@@ -2,60 +2,29 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Application\Services\TwitchTokenService;
-use App\Application\Services\TwitchUserService;
-use App\Controllers\Controller;
-use App\Controllers\GetUserById\GetUserByIdController;
-use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
-use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
-use Illuminate\Http\Request;
-use Mockery;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use Tests\TestCase;
 
 class GetUserByIdControllerTest extends TestCase
 {
-    private GetUserByIdController $controller;
-
-    /**
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $twitchTokenRepo = $this->createMock(TwitchTokenRepositoryInterface::class);
-        $apiRepository = $this->createMock(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class);
-        $tokenService = new TwitchTokenService($twitchTokenRepo, $apiRepository);
-
-        $userRepository = $this->createMock(TwitchUserRepositoryInterface::class);
-        $userService = new TwitchUserService($userRepository);
-
-        $this->controller = new GetUserByIdController($userService, $tokenService);
-
-        $mockController = $this->createMock(Controller::class);
-        $mockController->method('validateToken')
-            ->willReturn(200);
-
-        $reflection = new ReflectionClass($this->controller);
-        $property = $reflection->getProperty('controller');
-        $property->setValue($this->controller, $mockController);
-    }
-
     /**
      * @test
      * @throws \Exception
      */
     public function gets400WhenIdParameterIsMissing(): void
     {
-        $request = new Request();
+        $response = $this->call(
+            'GET',
+            '/analytics/user',
+            ['id' => ''],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
 
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Invalid or missing 'id' parameter.", $responseData['error']);
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "Invalid or missing 'id' parameter."
+        ]);
     }
 
     /**
@@ -64,13 +33,64 @@ class GetUserByIdControllerTest extends TestCase
      */
     public function gets400WhenIdParameterIsInvalid(): void
     {
-        $request = new Request();
-        $request->query->set('id', 'a');
+        $response = $this->call(
+            'GET',
+            '/analytics/user',
+            ['id' => 'a'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
 
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "Invalid or missing 'id' parameter."
+        ]);
+    }
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Invalid or missing 'id' parameter.", $responseData['error']);
+    /**
+     * @test
+     */
+    public function gets401WithInvalidToken(): void
+    {
+        $response = $this->call(
+            'GET',
+            'analytics/user',
+            ['id' => '39518378'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer invalid_token']
+        );
+
+        $response->assertStatus(401);
+    }
+
+    /**
+     * @test
+     */
+    public function gets200WhenIdParameterIsValid(): void
+    {
+        $response = $this->call(
+            'GET',
+            'analytics/user',
+            ['id' => '39518378'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'id',
+            'login',
+            'display_name',
+            'type',
+            'broadcaster_type',
+            'description',
+            'profile_image_url',
+            'offline_image_url',
+            'view_count',
+            'created_at',
+        ]);
     }
 }

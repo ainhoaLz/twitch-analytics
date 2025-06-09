@@ -2,62 +2,46 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Application\Services\TwitchEnrichedStreamService;
-use App\Application\Services\TwitchTokenService;
-use App\Controllers\Controller;
-use App\Controllers\GetEnrichedStreams\GetEnrichedStreamsController;
-use App\Domain\Interfaces\Database\TwitchTokenRepositoryInterface;
-use App\Domain\Interfaces\TwitchAPI\TwitchStreamRepositoryInterface;
-use App\Domain\Interfaces\TwitchAPI\TwitchUserRepositoryInterface;
-use Illuminate\Http\Request;
-use Mockery;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use Tests\TestCase;
 
 class GetEnrichedStreamsControllerTest extends TestCase
 {
-    private GetEnrichedStreamsController $controller;
-
-    /**
-     * @throws Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $streamRepository = $this->createMock(TwitchStreamRepositoryInterface::class);
-        $userRepository = $this->createMock(TwitchUserRepositoryInterface::class);
-        $streamService = new TwitchEnrichedStreamService($streamRepository, $userRepository);
-
-        $twitchTokenRepo = $this->createMock(TwitchTokenRepositoryInterface::class);
-        $apiRepository = $this->createMock(\App\Domain\Interfaces\TwitchAPI\TwitchTokenRepositoryInterface::class);
-        $tokenService = new TwitchTokenService($twitchTokenRepo, $apiRepository);
-
-        $this->controller = new GetEnrichedStreamsController($streamService, $tokenService);
-
-        $mockController = $this->createMock(Controller::class);
-        $mockController->method('validateToken')
-            ->willReturn(200);
-
-        $reflection = new ReflectionClass($this->controller);
-        $property = $reflection->getProperty('controller');
-        $property->setValue($this->controller, $mockController);
-    }
-
     /**
      * @test
      * @throws \Exception
      */
     public function gets400WhenLimitParameterIsMissing(): void
     {
-        $request = new Request();
+        $response = $this->call(
+            'GET',
+            '/analytics/streams/enriched',
+            [],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
 
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "Invalid 'limit' parameter."
+        ]);
+    }
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Invalid 'limit' parameter.", $responseData['error']);
+    /**
+     * @test
+     */
+    public function gets401WithInvalidToken(): void
+    {
+        $response = $this->call(
+            'GET',
+            'analytics/streams/enriched',
+            ['limit' => '5'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer invalid_token']
+        );
+
+        $response->assertStatus(401);
     }
 
     /**
@@ -66,13 +50,46 @@ class GetEnrichedStreamsControllerTest extends TestCase
      */
     public function gets400WhenLimitParameterIsInvalid(): void
     {
-        $request = new Request();
-        $request->query->set('limit', 'a');
+        $response = $this->call(
+            'GET',
+            '/analytics/streams/enriched',
+            ['limit' => 'invalid'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
 
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "Invalid 'limit' parameter."
+        ]);
+    }
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("Invalid 'limit' parameter.", $responseData['error']);
+    /**
+     * @test
+     */
+    public function gets200WhenLimitIsValid(): void
+    {
+        $response = $this->call(
+            'GET',
+            '/analytics/streams/enriched',
+            ['limit' => '5'],
+            [],
+            [],
+            ['HTTP_AUTHORIZATION' => 'Bearer 7cea4198cc833c8a3ac906080134d318dad625ea9da562367d848b1813ad35da']
+        );
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            '*' => [
+                'stream_id',
+                'user_id',
+                'user_name',
+                'viewer_count',
+                'title',
+                'user_display_name',
+                'profile_image_url',
+            ],
+        ]);
     }
 }

@@ -2,44 +2,28 @@
 
 namespace Tests\Integration\Controllers;
 
-use App\Application\Services\TokenService;
-use App\Controllers\Token\TokenController;
-use App\Domain\Interfaces\Database\TokenRepositoryInterface;
-use App\Domain\Interfaces\Database\UserRepositoryInterface;
 use Exception;
-use Illuminate\Http\Request;
-use Mockery;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class TokenControllerTest extends TestCase
 {
-    private TokenController $controller;
-
-    /**
-     * @throws \PHPUnit\Framework\MockObject\Exception
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $tokenRepository = $this->createMock(TokenRepositoryInterface::class);
-        $userRepository = $this->createMock(UserRepositoryInterface::class);
-        $tokenService = new TokenService($tokenRepository, $userRepository);
-        $this->controller = new TokenController($tokenService);
-    }
-
     /**
      * @test
      * @throws Exception
      */
     public function gets400WhenEmailParameterIsMissing(): void
     {
-        $request = new Request();
-
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("The email is mandatory", $responseData['error']);
+        $response = $this->call(
+            'POST',
+            '/token',
+            [
+                'api_key' => 'abcd123'
+            ]
+        );
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "The email is mandatory"
+        ]);
     }
 
     /**
@@ -47,14 +31,18 @@ class TokenControllerTest extends TestCase
      */
     public function gets400WhenEmailParameterIsNull(): void
     {
-        $request = new Request();
-        $request->query->set('email', '');
-
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("The email must be a valid email address", $responseData['error']);
+        $response = $this->call(
+            'POST',
+            '/token',
+            [
+                'email' => null,
+                'api_key' => 'abcd123'
+            ]
+        );
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "The email is mandatory"
+        ]);
     }
 
     /**
@@ -62,14 +50,18 @@ class TokenControllerTest extends TestCase
      */
     public function gets400WhenInvalidEmailIsGiven(): void
     {
-        $request = new Request();
-        $request->query->set('email', 'abc');
-
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
-
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("The email must be a valid email address", $responseData['error']);
+        $response = $this->call(
+            'POST',
+            '/token',
+            [
+                'email' => 'abc',
+                'api_key' => 'abcd123'
+            ]
+        );
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "The email must be a valid email address"
+        ]);
     }
 
     /**
@@ -78,13 +70,36 @@ class TokenControllerTest extends TestCase
      */
     public function gets400WhenApiKeyParameterIsMissing(): void
     {
-        $request = new Request();
-        $request->query->set('email', 'ainhoa@gmail.com');
+        $response = $this->call(
+            'POST',
+            '/token',
+            [
+                'email' => 'ainhoa@gmail.com',
+            ]
+        );
+        $response->assertStatus(400);
+        $response->assertJson([
+            'error' => "The api_key is mandatory"
+        ]);
+    }
 
-        $response = $this->controller->__invoke($request);
-        $responseData = json_decode($response->getContent(), true);
+    /**
+     * @test
+     */
+    public function gets200WhenEmailAndApiKeyAreValid(): void
+    {
+        $response = $this->call(
+            'POST',
+            '/token',
+            [
+                'email' => 'validEmail@gmail.com',
+                'api_key' => 'fd2900f5bbef470ba0bd4da8ba803109'
+            ]
+        );
 
-        $this->assertEquals(400, $response->getStatusCode());
-        $this->assertEquals("The api_key is mandatory", $responseData['error']);
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'token'
+        ]);
     }
 }
